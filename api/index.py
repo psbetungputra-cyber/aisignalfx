@@ -8,18 +8,15 @@ app = Flask(__name__)
 @app.route('/api/index')
 def get_gold():
     try:
-        r = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT", timeout=5).json()
+        r = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT", timeout=10).json()
         price = float(r['price'])
         
-        # Pakai pandas yang tadi kamu bilang bagus
-        df = pd.DataFrame([price], columns=['p'])
-        p = df['p'][0]
-        
+        # SL dan TP sesuai selera kamu tadi
         return jsonify({
-            "price": f"{p:.2f}",
-            "signal": "STRONG BUY" if p < 4585 else "STRONG SELL",
-            "sl": f"{p - 1.50:.2f}",
-            "tp": f"{p + 2.50:.2f}",
+            "price": f"{price:.2f}",
+            "signal": "STRONG BUY" if price < 4585 else "STRONG SELL",
+            "sl": f"{price - 1.20:.2f}",
+            "tp": f"{price + 2.50:.2f}",
             "time": time.strftime("%H:%M:%S")
         })
     except:
