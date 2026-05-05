@@ -2,31 +2,32 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI SIGNALFX</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI SIGNALFX PRO</title>
     <style>
-        body { background: #0b0e14; color: #e6edf3; font-family: sans-serif; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .card { background: #161b22; border: 2px solid #30363d; border-radius: 20px; width: 90%; max-width: 380px; padding: 25px; text-align: center; }
-        .price { font-size: 4.5rem; font-weight: bold; color: #ffffff; margin: 20px 0; font-family: monospace; }
-        .signal { width: 100%; padding: 20px 0; border-radius: 15px; font-size: 2.2rem; font-weight: 900; background: #30363d; margin-bottom: 20px; }
-        .buy { background: #238636 !important; }
-        .sell { background: #da3633 !important; }
-        .footer { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem; border-top: 1px solid #30363d; padding-top: 15px; }
+        body { background: #0b0e14; color: #e6edf3; font-family: sans-serif; margin: 0; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .container { background: #161b22; border: 2px solid #30363d; border-radius: 25px; width: 95%; height: 95%; display: flex; flex-direction: column; justify-content: space-around; align-items: center; box-sizing: border-box; padding: 20px; }
+        h1 { font-size: 1.8rem; color: #8b949e; margin: 0; letter-spacing: 5px; font-weight: bold; }
+        .price { font-size: 5.5rem; font-weight: bold; color: #58a6ff; text-shadow: 0 0 30px rgba(88,166,255,0.4); margin: 0; font-family: monospace; }
+        .signal-box { width: 90%; padding: 30px 10px; border-radius: 20px; font-weight: 900; font-size: 3rem; text-align: center; background: #30363d; transition: 0.5s; }
+        .buy { background: #238636 !important; box-shadow: 0 0 40px #238636; color: white; }
+        .sell { background: #da3633 !important; box-shadow: 0 0 40px #da3633; color: white; }
+        .details { width: 85%; display: flex; justify-content: space-between; border-top: 2px solid #30363d; padding-top: 20px; font-size: 1.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1 style="font-size: 1.5rem; color: #8b949e;">AI SIGNALFX</h1>
-        <div id="time" style="color: #58a6ff; font-size: 0.9rem;">CONNECTING...</div>
-        <div id="price" class="price">0.00</div>
-        <div id="signal" class="signal">WAIT</div>
-        <div class="footer">
-            <div style="color: #ff7b72;">SL: <span id="sl">0</span></div>
-            <div style="color: #3fb950;">TP: <span id="tp">0</span></div>
+    <div class="container">
+        <h1>AI SIGNALFX</h1>
+        <div id="time" style="color:#8b949e; font-size: 1.2rem;">CONNECTING...</div>
+        <div class="price" id="price">0.00</div>
+        <div id="signal" class="signal-box">SCANNING</div>
+        <div class="details">
+            <div style="color:#ff7b72">SL: <span id="sl">0</span></div>
+            <div style="color:#3fb950">TP: <span id="tp">0</span></div>
         </div>
     </div>
     <script>
-        async function up() {
+        async function update() {
             try {
                 const r = await fetch('/api/index');
                 const d = await r.json();
@@ -36,10 +37,10 @@
                 document.getElementById('tp').innerText = d.tp;
                 const s = document.getElementById('signal');
                 s.innerText = d.signal;
-                s.className = 'signal ' + (String(d.signal).includes('BUY') ? 'buy' : 'sell');
+                s.className = 'signal-box ' + (String(d.signal).includes('BUY') ? 'buy' : 'sell');
             } catch (e) { }
         }
-        setInterval(up, 3000); up();
+        setInterval(update, 3000); update();
     </script>
 </body>
 </html>
