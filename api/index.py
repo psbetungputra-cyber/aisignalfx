@@ -5,16 +5,17 @@ import time
 app = Flask(__name__)
 
 @app.route('/api/index')
-def gold_data():
+def get_data():
     try:
-        r = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT", timeout=5)
-        price = float(r.json()['price'])
+        # Mengambil data harga emas
+        res = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT", timeout=5).json()
+        p = float(res['price'])
         return jsonify({
-            "price": f"{price:.2f}",
-            "signal": "STRONG BUY" if price < 4575 else "STRONG SELL",
-            "sl": f"{price - 1.50:.2f}",
-            "tp": f"{price + 2.50:.2f}",
+            "price": f"{p:.2f}",
+            "signal": "STRONG BUY" if p < 4565 else "STRONG SELL",
+            "sl": f"{p - 2.50:.2f}",
+            "tp": f"{p + 3.50:.2f}",
             "time": time.strftime("%H:%M:%S")
         })
     except:
-        return jsonify({"price": "0.00", "signal": "ERROR"}), 500
+        return jsonify({"price": "Error", "signal": "Wait"}), 500
