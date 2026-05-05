@@ -1,4 +1,3 @@
-from flask import Flask, jsonify
 import requests
 import time
 
@@ -18,4 +17,4 @@ def get_data():
             "time": time.strftime("%H:%M:%S")
         })
     except:
-        return jsonify({"price": "Error", "signal": "Wait"}), 500
+        return jsonify({"price": "
