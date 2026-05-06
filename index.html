@@ -120,18 +120,41 @@
         const SB_URL = "https://ewpmholcltlalxcqgwbs.supabase.co/rest/v1/signals?select=*&order=id.desc&limit=1";
         const SB_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhmd2h0dnV5eGp6dGl1ZmZ1cGloIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODA4MzM1NywiZXhwIjoyMDkzNjU5MzU3fQ.TRi_vv5_r5-Bru2VjNE0DMq_NxZ7jYjAA3lEDkFGViA";
 
-        async function fetchLive() {
+                async function updateWeb() {
             try {
-                const r = await fetch(SB_URL, { headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` } });
-                const d = await r.json();
-                if (d && d.length > 0) {
-                    const s = d[0];
-                    document.getElementById('web-type').innerText = s.type;
-                    document.getElementById('web-entry').innerText = `Entry: ${s.entry} | TP: ${s.tp} | SL: ${s.sl}`;
-                    document.getElementById('neural-logs').innerHTML = `>> DETECTED: ${s.type} | POWER: ${s.power}<br>>> ZONE: ${s.zone} | ADVICE: ${s.advice}`;
+                const response = await fetch(SB_URL, { 
+                    headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` } 
+                });
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    const s = data[0]; // Ambil data terbaru
+                    
+                    // 1. Update Tipe Signal (BUY/SELL)
+                    const typeEl = document.getElementById('p-type') || document.getElementById('web-type');
+                    if(typeEl) typeEl.innerText = s.type || s.tipe || "WAITING...";
+
+                    // 2. Update Harga Entry, TP, SL
+                    const entryEl = document.getElementById('p-entry') || document.getElementById('web-entry');
+                    if(entryEl) {
+                        entryEl.innerText = `Entry: ${s.entry} | TP: ${s.tp} | SL: ${s.sl}`;
+                    }
+
+                    // 3. Update Log Analisis (SMC/Power)
+                    const logEl = document.getElementById('neural-logs');
+                    if(logEl) {
+                        logEl.innerHTML = `
+                            <p class="text-blue-500 font-bold">>> DATA RECEIVED: ${s.pair || 'XAUUSD'}</p>
+                            <p>ZONE: ${s.zone || '-'} | POWER: ${s.power || '-'}</p>
+                            <p class="text-gray-400 italic">Advice: ${s.advice || 'Waiting...'}</p>
+                        `;
+                    }
                 }
-            } catch (e) { console.log("Connecting..."); }
+            } catch (err) { 
+                console.log("Mencoba menyambungkan ulang ke Pydroid..."); 
+            }
         }
+
         setInterval(fetchLive, 3000);
     </script>
 </body>
