@@ -134,5 +134,45 @@
             if(logContainer.children.length > 4) logContainer.removeChild(logContainer.children[0]);
         }, 3000);
     </script>
+        <script>
+        // 1. Fungsi Jam Server
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-GB', { hour12: false });
+            if(document.getElementById('server-time')) {
+                document.getElementById('server-time').innerText = timeString + " MDT";
+            }
+        }
+        setInterval(updateTime, 1000);
+
+        // 2. Logika Neural Log (AI ngetik sendiri)
+        const logs = [
+            "Analyzing order block at 4642.10...",
+            "Liquidity sweep detected on lower timeframe",
+            "Neural pattern matching: 92% similarity found",
+            "Updating fresh zones for PAXG-USD...",
+            "Monitoring sell-side liquidity...",
+            "FVG gap at 4647.00 identified as magnet"
+        ];
+
+        function addNeuralLog() {
+            const logContainer = document.getElementById('neural-logs');
+            if(!logContainer) return;
+
+            const newLog = document.createElement('div');
+            newLog.className = 'flex gap-2 text-gray-300 animate-pulse';
+            newLog.innerHTML = `<span class="text-gray-600">>></span><p>${logs[Math.floor(Math.random() * logs.length)]}</p>`;
+            
+            if (logContainer.children.length > 3) {
+                logContainer.removeChild(logContainer.children[0]);
+            }
+            logContainer.appendChild(newLog);
+        }
+
+        setInterval(addNeuralLog, 4000);
+        addNeuralLog(); // Jalankan sekali di awal
+    </script>
+
+
 </body>
 </html>
