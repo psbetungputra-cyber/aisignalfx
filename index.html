@@ -147,6 +147,26 @@
                 if(logBox.children.length > 3) logBox.removeChild(logBox.lastChild);
             }
         }, 4000);
+                // 5. UPDATE SIGNAL DARI FIREBASE (OTAK PYTHON)
+        const FIREBASE_LINK = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/signal.json";
+
+        setInterval(async () => {
+            try {
+                const response = await fetch(FIREBASE_LINK);
+                const data = await response.json();
+                if (data) {
+                    // Update Teks Signal
+                    const signalText = document.querySelector('.text-blue-600.text-\\[9px\\]');
+                    if(signalText) signalText.innerText = data.signal;
+
+                    // Update Harga/Entry
+                    const priceText = document.querySelector('.font-mono.italic');
+                    if(priceText) priceText.innerText = "Entry: " + data.price;
+                }
+            } catch (e) {
+                console.log("Syncing...");
+            }
+        }, 2000);
     }
 
     window.onload = initializeApp;
