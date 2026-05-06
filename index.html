@@ -149,42 +149,30 @@
         }, 4000);
                 // 5. UPDATE SIGNAL DARI FIREBASE (OTAK PYTHON)
         const FIREBASE_LINK = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/signal.json";
+        // Ganti bagian update di dalam setInterval:
+if (data) {
+    // 1. Update Judul Signal
+    document.querySelector('.text-blue-600.text-\\[9px\\]').innerText = data.signal;
 
-                setInterval(async () => {
-            try {
-                const response = await fetch(FIREBASE_LINK);
-                const data = await response.json();
-                if (data) {
-                    // 1. Update Signal Utama
-                    const signalEl = document.querySelector('.text-blue-600.text-\\[9px\\]');
-                    if(signalEl) signalEl.innerText = data.signal;
+    // 2. Update Entry & TP/SL (Biar nggak cuma angka statis)
+    const entryBox = document.querySelector('.text-\\[10px\\].text-gray-500.font-mono.italic');
+    if(entryBox) {
+        entryBox.innerHTML = `Entry: ${data.entry_area} | <span style="color:green">TP: ${data.tp}</span>`;
+    }
 
-                    // 2. Update Harga & TP/SL di bawahnya
-                    const entryEl = document.querySelector('.font-mono.italic');
-                    if(entryEl) {
-                        entryEl.innerHTML = `
-                            Entry: ${data.entry_area}<br>
-                            <span style="color: green">TP: ${data.tp}</span> | 
-                            <span style="color: red">SL: ${data.sl}</span>
-                        `;
-                    }
-
-                    // 3. Update Neural Learning Log (Kotak bawah)
-                    const logBox = document.getElementById('neural-logs');
-                    if(logBox) {
-                        logBox.innerHTML = `
-                            <p class="text-[10px] text-gray-400">--- NEURAL ANALYSIS ---</p>
-                            <p class="text-[10px]">Time: ${data.time}</p>
-                            <p class="text-[10px]">Structure: ${data.analisis_zona}</p>
-                            <p class="text-[10px]">Advice: ${data.advice}</p>
-                            <p class="text-[10px] text-blue-500 font-bold">Accuracy: ${data.accuracy}</p>
-                        `;
-                    }
-                }
-            } catch (e) {
-                console.log("Syncing NeuroPro Engine...");
-            }
-        }, 2000);
+    // 3. Update Neural Learning Log (Bagian bawah yang kamu mau)
+    const logBox = document.querySelector('.text-\\[10px\\].text-gray-400');
+    if(logBox) {
+        // Cari elemen p setelahnya untuk mengisi detail
+        const details = logBox.parentElement.querySelectorAll('p');
+        if(details.length >= 3) {
+            details[1].innerText = "Time: " + data.time;
+            details[2].innerText = "Structure: " + data.analisis_zona;
+            // Tambahkan baris baru untuk Advice
+            logBox.parentElement.innerHTML += `<p class="text-[10px] text-blue-500">${data.advice}</p>`;
+        }
+    }
+}
 
     }
 
