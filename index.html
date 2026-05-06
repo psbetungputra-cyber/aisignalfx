@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <title>AiSignalFx</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -79,7 +80,8 @@
                     <span class="text-green-400 flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> PAXG-USD Live</span>
                 </div>
                 <div class="flex-1 bg-black/40 rounded flex items-center justify-center border border-white/5">
-                    <p class="text-gray-600 text-xs font-mono animate-pulse uppercase">Connecting Neural Engine...</p>
+                    <div id="tradingview-chart" class="w-full h-full rounded-lg"></div>
+
                 </div>
                 <div class="absolute bottom-6 right-6 glass-panel p-3 border border-cyan-500/30 w-40 shadow-xl">
                     <p class="text-[8px] text-gray-500 uppercase mb-2 font-bold">Scan Status</p>
