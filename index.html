@@ -150,23 +150,42 @@
                 // 5. UPDATE SIGNAL DARI FIREBASE (OTAK PYTHON)
         const FIREBASE_LINK = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/signal.json";
 
-        setInterval(async () => {
+                setInterval(async () => {
             try {
                 const response = await fetch(FIREBASE_LINK);
                 const data = await response.json();
                 if (data) {
-                    // Update Teks Signal
-                    const signalText = document.querySelector('.text-blue-600.text-\\[9px\\]');
-                    if(signalText) signalText.innerText = data.signal;
+                    // 1. Update Signal Utama
+                    const signalEl = document.querySelector('.text-blue-600.text-\\[9px\\]');
+                    if(signalEl) signalEl.innerText = data.signal;
 
-                    // Update Harga/Entry
-                    const priceText = document.querySelector('.font-mono.italic');
-                    if(priceText) priceText.innerText = "Entry: " + data.price;
+                    // 2. Update Harga & TP/SL di bawahnya
+                    const entryEl = document.querySelector('.font-mono.italic');
+                    if(entryEl) {
+                        entryEl.innerHTML = `
+                            Entry: ${data.entry_area}<br>
+                            <span style="color: green">TP: ${data.tp}</span> | 
+                            <span style="color: red">SL: ${data.sl}</span>
+                        `;
+                    }
+
+                    // 3. Update Neural Learning Log (Kotak bawah)
+                    const logBox = document.getElementById('neural-logs');
+                    if(logBox) {
+                        logBox.innerHTML = `
+                            <p class="text-[10px] text-gray-400">--- NEURAL ANALYSIS ---</p>
+                            <p class="text-[10px]">Time: ${data.time}</p>
+                            <p class="text-[10px]">Structure: ${data.analisis_zona}</p>
+                            <p class="text-[10px]">Advice: ${data.advice}</p>
+                            <p class="text-[10px] text-blue-500 font-bold">Accuracy: ${data.accuracy}</p>
+                        `;
+                    }
                 }
             } catch (e) {
-                console.log("Syncing...");
+                console.log("Syncing NeuroPro Engine...");
             }
         }, 2000);
+
     }
 
     window.onload = initializeApp;
