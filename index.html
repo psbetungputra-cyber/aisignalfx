@@ -86,39 +86,70 @@
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        function loadFullApp() {
-            // 1. Clock
-            setInterval(() => {
-                document.getElementById('server-clock').innerText = new Date().toLocaleTimeString('en-GB') + " MDT";
-            }, 1000);
+    function initializeApp() {
+        // 1. JAM REALTIME
+        setInterval(() => {
+            const el = document.getElementById('server-clock');
+            if(el) el.innerText = new Date().toLocaleTimeString('en-GB') + " MDT";
+        }, 1000);
 
-            // 2. Chart Engine (Fixed Symbol OANDA)
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": "OANDA:XAUUSD",
-                "interval": "15",
-                "timezone": "Etc/UTC",
-                "theme": "light",
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "hide_side_toolbar": false,
-                "allow_symbol_change": true,
-                "container_id": "tv_chart_container"
+        // 2. TRADINGVIEW WIDGET
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "OANDA:XAUUSD",
+            "interval": "15",
+            "timezone": "Etc/UTC",
+            "theme": "light",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "container_id": "tv_chart_container"
+        });
+
+        // 3. FUNGSI KLIK MENU (TAB SWITCHING)
+        const menuLinks = document.querySelectorAll('nav a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Hapus warna biru dari semua menu
+                menuLinks.forEach(l => {
+                    l.classList.remove('active-link', 'text-blue-600', 'bg-blue-50', 'border-l-4', 'border-blue-600');
+                    l.classList.add('text-gray-400');
+                });
+
+                // Tambah warna biru ke menu yang diklik
+                this.classList.add('active-link', 'text-blue-600', 'bg-blue-50', 'border-l-4', 'border-blue-600');
+                this.classList.remove('text-gray-400');
+
+                // Notifikasi sederhana (opsional)
+                const menuName = this.querySelector('span').innerText;
+                console.log("Pindah ke: " + menuName);
+                
+                // Di sini nanti kita bisa buat fungsi untuk ganti isi kontennya
+                if(menuName !== "DASHBOARD") {
+                    alert("Menu " + menuName + " sedang dalam sinkronisasi data...");
+                }
             });
+        });
 
-            // 3. Neural Engine Log
-            const messages = ["Analyzing Order Block...", "Liquidity sweep detected", "Pattern match: 94.2%", "Updating fresh zones"];
-            setInterval(() => {
-                const box = document.getElementById('neural-logs');
-                const entry = document.createElement('p');
-                entry.innerHTML = `<span class="text-blue-400">>></span> ${messages[Math.floor(Math.random()*messages.length)]}`;
-                box.prepend(entry);
-                if(box.children.length > 3) box.removeChild(box.lastChild);
-            }, 3500);
-        }
-        window.onload = loadFullApp;
-    </script>
+        // 4. NEURAL LOGS
+        const msgs = ["Scanning Liquidity...", "OANDA Feed Synced", "Neural match: 94%"];
+        setInterval(() => {
+            const logBox = document.getElementById('neural-logs');
+            if(logBox) {
+                const p = document.createElement('p');
+                p.innerHTML = `<span class="text-blue-400">>></span> ${msgs[Math.floor(Math.random()*msgs.length)]}`;
+                logBox.prepend(p);
+                if(logBox.children.length > 3) logBox.removeChild(logBox.lastChild);
+            }
+        }, 4000);
+    }
+
+    window.onload = initializeApp;
+</script>
 </body>
 </html>
