@@ -212,6 +212,43 @@
 
         setInterval(addNeuralLog, 4000);
         addNeuralLog(); // Langsung jalan saat loading
+            // 3. Konfigurasi Grafik TradingView Asli
+const chartOptions = { 
+    layout: { backgroundColor: 'transparent', textColor: '#94a3b8' },
+    grid: { vertLines: { color: 'rgba(42, 46, 57, 0.1)' }, horzLines: { color: 'rgba(42, 46, 57, 0.1)' } },
+    crosshair: { mode: 1 },
+    rightPriceScale: { borderColor: 'rgba(197, 203, 206, 0.1)' },
+    timeScale: { borderColor: 'rgba(197, 203, 206, 0.1)', timeVisible: true },
+};
+
+const container = document.getElementById('tradingview-chart');
+if (container) {
+    const chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: container.clientHeight,
+        ...chartOptions
+    });
+    
+    const candleSeries = chart.addCandlestickSeries({
+        upColor: '#22c55e', downColor: '#ef4444', 
+        borderVisible: false, wickUpColor: '#22c55e', wickDownColor: '#ef4444'
+    });
+
+    // Data Simulasi Harga (Bisa kamu ganti nanti dengan data asli)
+    candleSeries.setData([
+        { time: '2026-05-01', open: 4640, high: 4645, low: 4638, close: 4642 },
+        { time: '2026-05-02', open: 4642, high: 4648, low: 4640, close: 4646 },
+        { time: '2026-05-03', open: 4646, high: 4647, low: 4642, close: 4643 },
+        { time: '2026-05-04', open: 4643, high: 4650, low: 4643, close: 4648 },
+        { time: '2026-05-05', open: 4648, high: 4655, low: 4647, close: 4652 }
+    ]);
+
+    // Biar grafik menyesuaikan ukuran saat layar HP diputar
+    window.addEventListener('resize', () => {
+        chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+    });
+}
+
     </script>
 </body>
 </html>
