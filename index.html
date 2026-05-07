@@ -57,31 +57,39 @@
 
         <div class="lg:col-span-1 glass-panel p-4 bg-white border">
             <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest border-b pb-2 text-center">Active Signals</h3>
-            div id="signal-container" class="space-y-3">
-                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <div class="flex justify-between font-black text-sm mb-2">
-                        <span class="text-gray-700">XAUUSD</span>
-                        <span id="signal-type" class="text-blue-600 animate-pulse">SCANNING...</span>
+                    <div id="signal-container" class="space-y-3">
+            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div class="flex justify-between font-black text-sm mb-2">
+                    <span class="text-gray-700">XAUUSD</span>
+                    <span id="signal-type" class="text-blue-600 animate-pulse">SCANNING...</span>
+                </div>
+                
+                <div class="space-y-2 font-mono text-[11px]">
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-gray-400">PRICE</span>
+                        <span id="price-display" class="font-bold text-gray-700">0.00</span>
                     </div>
-                    <div class="space-y-2 font-mono text-[11px]">
-                        <div class="flex justify-between border-b border-blue-100 pb-1">
-                            <span class="text-gray-400">PRICE</span>
-                            <span id="price-display" class="font-bold text-gray-700">0.00</span>
-                        </div>
-                        <div class="flex justify-between border-b border-blue-100 pb-1">
-    <span class="text-gray-400">ANALISA AI</span>
-    <span id="note-display" class="font-bold text-blue-600 text-[10px] text-right italic">Memuat analisa...</span>
-</div>
-
-                        <div class="flex justify-between text-red-500">
-                            <span>SL</span>
-                            <span id="sl-display" class="font-bold">0.00</span>
-                        </div>
-                        <div style="margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
-    <strong style="display: block; font-size: 12px; color: #888;">AI ANALYSIS:</strong>
-    <span id="display-note" style="font-size: 13px; color: #333;">Memuat analisa...</span>
-</div>
-<script>
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-gray-400">ENTRY</span>
+                        <span id="entry-display" class="font-bold text-blue-500">Waiting...</span>
+                    </div>
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-gray-400 text-green-600">TP</span>
+                        <span id="tp-display" class="font-bold">0.00</span>
+                    </div>
+                    <div class="flex justify-between border-b border-blue-100 pb-1 text-red-500">
+                        <span class="">SL</span>
+                        <span id="sl-display" class="font-bold">0.00</span>
+                    </div>
+                    <div class="flex justify-between border-b border-blue-100 pb-1">
+                        <span class="text-gray-400">ANALISA AI</span>
+                        <span id="note-display" class="font-bold text-blue-600 italic text-[10px]">Memuat analisa...</span>
+                    </div>
+                </div>
+                <p class="text-[9px] text-gray-400 mt-3 text-right italic" id="time-display">Last sync: --:--</p>
+            </div>
+        </div>
+            <script>
 // Tambahkan ini di bagian script pengambilan data Firebase kamu
 // Pastikan variabel 'data' adalah hasil dari fetch Firebase
 document.getElementById('display-note').innerText = data.note;
