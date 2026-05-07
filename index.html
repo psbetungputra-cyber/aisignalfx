@@ -157,5 +157,33 @@
 
         setInterval(fetchLive, 3000);
     </script>
+        <script>
+    const FIREBASE_URL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/signal.json";
+
+    async function updateTampilanWeb() {
+        try {
+            const response = await fetch(FIREBASE_URL);
+            const data = await response.json();
+            
+            if (data) {
+                // Pastikan ID ini ada di elemen HTML kamu
+                if(document.getElementById("entry-display")) document.getElementById("entry-display").innerText = data.entry_area;
+                if(document.getElementById("price-display")) document.getElementById("price-display").innerText = data.price;
+                if(document.getElementById("tp-display")) document.getElementById("tp-display").innerText = data.tp;
+                if(document.getElementById("sl-display")) document.getElementById("sl-display").innerText = data.sl;
+                if(document.getElementById("signal-type")) document.getElementById("signal-type").innerText = data.signal;
+                if(document.getElementById("time-display")) document.getElementById("time-display").innerText = data.time;
+            }
+        } catch (error) {
+            console.error("Gagal ambil data Firebase:", error);
+        }
+    }
+
+    setInterval(updateTampilanWeb, 5000);
+    updateTampilanWeb();
+    </script>
+</body>
+</html>
+
 </body>
 </html>
