@@ -8,3 +8,27 @@
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
+const FIREBASE_URL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/signal.json";
+
+async function updateTampilanWeb() {
+    try {
+        const response = await fetch(FIREBASE_URL);
+        const data = await response.json();
+        
+        if (data) {
+            // Ini akan mengisi teks ke HTML kamu secara otomatis
+            document.getElementById("entry-display").innerText = data.entry_area;
+            document.getElementById("price-display").innerText = data.price;
+            document.getElementById("tp-display").innerText = data.tp;
+            document.getElementById("sl-display").innerText = data.sl;
+            document.getElementById("signal-type").innerText = data.signal;
+            document.getElementById("time-display").innerText = data.time;
+        }
+    } catch (error) {
+        console.error("Gagal ambil data Firebase:", error);
+    }
+}
+
+// Cek data setiap 5 detik agar web selalu update otomatis
+setInterval(updateTampilanWeb, 5000);
+updateTampilanWeb();
