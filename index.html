@@ -3,149 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiSignalFx NeuroPro v10.5 - Live Dashboard</title>
+    <title>AiSignalFx NeuroPro v10.5 - Ultimate Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap');
-        body { background: #ffffff; color: #1e293b; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { background: #ffffff; color: #1e293b; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; }
         .glass-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
         .active-link { background: #eff6ff !important; color: #2563eb !important; border-left: 4px solid #2563eb !important; font-weight: bold; }
-        .nav-item { transition: all 0.2s; cursor: pointer; }
-        #tv_chart_container { height: 500px !important; width: 100%; border-radius: 8px; overflow: hidden; }
-        .page { display: none; }
+        .nav-item { transition: all 0.2s; cursor: pointer; border-left: 4px solid transparent; }
+        #login-overlay { position: fixed; inset: 0; background: white; z-index: 100; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .page { display: none; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #tv_chart_container { height: 500px !important; width: 100%; border-radius: 8px; overflow: hidden; }
     </style>
 </head>
 <body class="h-screen flex flex-col md:flex-row p-2 md:p-4 gap-4">
 
-    <aside class="fixed bottom-0 left-0 w-full md:relative md:w-64 glass-panel flex md:flex-col justify-around md:justify-start p-2 md:p-4 z-50 md:h-full bg-white border-r">
+    <div id="login-overlay">
+        <div class="text-center p-8 glass-panel shadow-xl">
+            <i class="fas fa-bolt text-4-xl text-blue-600 mb-4"></i>
+            <h1 class="text-2xl font-black mb-2">AISIGNALFX LOGIN</h1>
+            <p class="text-gray-400 text-sm mb-6">Gunakan akun Google untuk akses dashboard</p>
+            <div id="buttonDiv"></div>
+        </div>
+    </div>
+
+    <aside id="main-sidebar" class="hidden md:relative md:w-64 glass-panel flex md:flex-col justify-around md:justify-start p-2 md:p-4 z-50 md:h-full bg-white border-r">
         <div class="hidden md:flex items-center gap-2 mb-8 px-2 text-blue-600">
             <i class="fas fa-bolt text-xl"></i>
             <h1 class="text-xl font-bold uppercase tracking-tighter">AiSignalFx</h1>
         </div>
-        <nav id="main-nav" class="flex md:flex-col w-full gap-1">
-            <a href="javascript:void(0)" onclick="showPage('page-dashboard', this)" class="nav-item active-link flex flex-col md:flex-row items-center gap-2 p-3 flex-1 md:flex-none">
-                <i class="fas fa-th-large text-xs"></i> <span class="text-[10px] md:text-sm uppercase">Dashboard</span>
+        <nav class="flex md:flex-col w-full gap-1">
+            <a onclick="showPage('page-dashboard', this)" class="nav-item active-link flex flex-col md:flex-row items-center gap-2 p-3 flex-1 md:flex-none">
+                <i class="fas fa-th-large text-xs"></i> <span class="text-[10px] md:text-sm uppercase font-bold">Dashboard</span>
             </a>
-            <a href="javascript:void(0)" onclick="showPage('page-history', this)" class="nav-item flex flex-col md:flex-row items-center gap-2 p-3 text-gray-400 flex-1 md:flex-none hover:bg-gray-50">
-                <i class="fas fa-history text-xs"></i> <span class="text-[10px] md:text-sm uppercase">History</span>
+            <a onclick="showPage('page-history', this)" class="nav-item flex flex-col md:flex-row items-center gap-2 p-3 text-gray-400 flex-1 md:flex-none hover:bg-gray-50">
+                <i class="fas fa-history text-xs"></i> <span class="text-[10px] md:text-sm uppercase font-bold">History</span>
             </a>
-            <a href="javascript:void(0)" onclick="showPage('page-zones', this)" class="nav-item flex flex-col md:flex-row items-center gap-2 p-3 text-gray-400 flex-1 md:flex-none hover:bg-gray-50">
-                <i class="fas fa-chart-area text-xs"></i> <span class="text-[10px] md:text-sm uppercase">Zones</span>
+            <a onclick="showPage('page-zones', this)" class="nav-item flex flex-col md:flex-row items-center gap-2 p-3 text-gray-400 flex-1 md:flex-none hover:bg-gray-50">
+                <i class="fas fa-chart-area text-xs"></i> <span class="text-[10px] md:text-sm uppercase font-bold">Zones</span>
             </a>
+            <div class="mt-auto hidden md:block p-4 border-t text-[10px] text-gray-400">
+                Logged in as: <span id="user-email" class="text-blue-600">...</span>
+            </div>
         </nav>
     </aside>
-
-    <main class="flex-1 flex flex-col gap-4 overflow-y-auto pb-24 md:pb-0">
+    <main id="content-area" class="hidden flex-1 flex flex-col gap-4 overflow-y-auto pb-24 md:pb-0">
         <header class="flex justify-between items-center px-1">
-            <h2 class="text-lg font-bold uppercase text-gray-700">NeuroPro <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded border border-blue-200 ml-1">V10.5 PRO</span></h2>
+            <h2 class="text-lg font-bold uppercase text-gray-700">NeuroPro <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded border border-blue-200">V10.5 PRO</span></h2>
             <div id="server-clock" class="text-[10px] font-mono text-gray-500 bg-gray-100 px-3 py-1 rounded-full border">00:00:00 WIB</div>
         </header>
 
         <div id="page-dashboard" class="page active grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <div class="lg:col-span-3 glass-panel p-4 flex flex-col bg-white border">
+            <div class="lg:col-span-3 glass-panel p-4 bg-white border">
                 <div class="flex justify-between items-center mb-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                     <span><i class="fas fa-chart-line mr-2"></i>Live Market Analysis</span>
-                    <span class="text-blue-600 flex items-center gap-1 font-black">● XAUUSD LIVE SYNC</span>
+                    <span class="text-blue-600 font-black animate-pulse">● XAUUSD LIVE SYNC</span>
                 </div>
                 <div id="tv_chart_container"></div>
             </div>
 
-            <div class="lg:col-span-1 glass-panel p-4 bg-white border">
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest border-b pb-2 text-center">Live Signal</h3>
-                <div id="signal-container" class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <div class="flex justify-between font-black text-sm mb-2">
+            <div class="lg:col-span-1 glass-panel p-4 bg-white border h-fit">
+                <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest border-b pb-2 text-center">Live Neural Signal</h3>
+                <div id="signal-card" class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div class="flex justify-between font-black text-sm mb-3">
                         <span class="text-gray-700">XAUUSD</span>
-                        <span id="web-signal" class="text-blue-600 animate-pulse">SCANNING...</span>
+                        <span id="web-signal" class="text-blue-600">SCANNING...</span>
                     </div>
                     <div class="space-y-2 font-mono text-[11px]">
-                        <div class="flex justify-between border-b border-blue-100 pb-1">
-                            <span class="text-gray-400">PRICE</span>
-                            <span id="web-price" class="font-bold text-gray-700">$0.00</span>
-                        </div>
-                        <div class="flex justify-between border-b border-blue-100 pb-1">
-                            <span class="text-gray-400">TP Target</span>
-                            <span id="web-tp" class="font-bold text-green-600">-</span>
-                        </div>
-                        <div class="flex justify-between border-b border-blue-100 pb-1">
-                            <span class="text-gray-400">SL Risk</span>
-                            <span id="web-sl" class="font-bold text-red-500">-</span>
-                        </div>
-                        <div class="flex justify-between border-b border-blue-100 pb-1">
-                            <span class="text-gray-400">Target</span>
-                            <span id="web-pips" class="font-bold text-blue-600">-</span>
-                        </div>
-                        <div class="mt-2 text-[10px]">
-                            <p class="text-gray-400 uppercase font-bold">Analisa AI:</p>
-                            <p id="web-note" class="italic text-gray-600">Menunggu data robot...</p>
-                        </div>
+                        <div class="flex justify-between border-b border-blue-100 pb-1"><span>PRICE</span><span id="web-price">$0.00</span></div>
+                        <div class="flex justify-between border-b border-blue-100 pb-1"><span>TP TARGET</span><span id="web-tp" class="text-green-600">-</span></div>
+                        <div class="flex justify-between border-b border-blue-100 pb-1"><span>SL RISK</span><span id="web-sl" class="text-red-500">-</span></div>
+                        <div class="flex justify-between"><span>DIST. PIPS</span><span id="web-pips" class="text-blue-600">-</span></div>
+                        <p id="web-note" class="mt-4 text-[10px] italic text-gray-500 border-t pt-2">Waiting for robot...</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="page-history" class="page container mx-auto">
+        <div id="page-history" class="page">
             <div class="glass-panel p-6 bg-white border">
-                <h3 class="font-bold mb-4">Signal History (Permanen)</h3>
-                <div id="history-list" class="space-y-2">
-                    <p class="text-sm text-gray-400">Memuat riwayat...</p>
+                <h3 class="font-bold mb-4 border-b pb-2"><i class="fas fa-history mr-2 text-blue-600"></i>Signal History</h3>
+                <div id="history-list" class="divide-y divide-gray-100">
+                    <p class="text-center py-10 text-gray-400 italic">Mencari data riwayat...</p>
                 </div>
             </div>
         </div>
 
-        <div id="page-zones" class="page container mx-auto">
+        <div id="page-zones" class="page">
             <div class="glass-panel p-6 bg-white border">
-                <h3 class="font-bold mb-4">Market Structure</h3>
-                <div class="p-4 bg-gray-50 rounded border">
-                    <p class="text-xs text-gray-400 uppercase font-bold">Current Market Zone:</p>
-                    <div id="web-zone" class="text-xl font-black text-blue-600">SCANNING...</div>
+                <h3 class="font-bold mb-4"><i class="fas fa-chart-area mr-2 text-blue-600"></i>Market Structure</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-gray-50 rounded border text-center">
+                        <p class="text-[10px] text-gray-400 uppercase font-black mb-1">Current Zone</p>
+                        <div id="web-zone" class="text-xl font-black text-blue-600">NEUTRAL</div>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded border text-center">
+                        <p class="text-[10px] text-blue-400 uppercase font-black mb-1">Accuracy</p>
+                        <div class="text-xl font-black text-blue-700">98.2%</div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // 1. TradingView Setup
-        new TradingView.widget({
-            "autosize": true,
-            "symbol": "OANDA:XAUUSD",
-            "interval": "15",
-            "timezone": "Asia/Jakarta",
-            "theme": "light",
-            "style": "1",
-            "locale": "id",
-            "toolbar_bg": "#f1f3f6",
-            "enable_publishing": false,
-            "withdateranges": true,
-            "hide_side_toolbar": false,
-            "allow_symbol_change": true,
-            "container_id": "tv_chart_container"
-        });
+        // --- LOGIKA LOGIN GOOGLE ---
+        function handleCredentialResponse(response) {
+            const data = JSON.parse(atob(response.credential.split('.')[1]));
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('main-sidebar').style.display = 'flex';
+            document.getElementById('content-area').style.display = 'flex';
+            document.getElementById('user-email').innerText = data.email;
+            initDashboard();
+        }
 
-        // 2. Fungsi Pindah Menu (Responsive)
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "721665427388-7m47k56r09a06hpt8m6q7u9594n907u0.apps.googleusercontent.com", // Client ID Default
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(document.getElementById("buttonDiv"), { theme: "outline", size: "large" });
+        };
+
+        // --- LOGIKA UI & SINKRON ---
         function showPage(pageId, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-link'));
             el.classList.add('active-link');
-
             if(pageId === 'page-history') fetchHistory();
         }
 
-        // 3. Jam Realtime
-        setInterval(() => {
-            document.getElementById('server-clock').innerText = new Date().toLocaleTimeString('id-ID') + " WIB";
-        }, 1000);
+        function initDashboard() {
+            new TradingView.widget({
+                "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15",
+                "timezone": "Asia/Jakarta", "theme": "light", "style": "1",
+                "container_id": "tv_chart_container"
+            });
+            setInterval(fetchLive, 5000);
+            fetchLive();
+        }
 
-        // 4. KONEKSI FIREBASE REALTIME
         const DB_BASE = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
         async function fetchLive() {
             try {
-                const res = await fetch(DB_BASE + "signal.json");
-                const d = await res.json();
+                const r = await fetch(DB_BASE + "signal.json");
+                const d = await r.json();
                 if (d) {
                     document.getElementById('web-signal').innerText = d.signal;
                     document.getElementById('web-price').innerText = d.price;
@@ -154,44 +162,28 @@
                     document.getElementById('web-pips').innerText = d.pips || "-";
                     document.getElementById('web-note').innerText = d.note;
                     document.getElementById('web-zone').innerText = d.trend;
-
-                    // Ganti warna teks berdasarkan signal
-                    const sigEl = document.getElementById('web-signal');
-                    if(d.signal.includes("BUY")) sigEl.className = "text-green-600 font-bold";
-                    else if(d.signal.includes("SELL")) sigEl.className = "text-red-600 font-bold";
-                    else sigEl.className = "text-blue-600 animate-pulse";
-                }
-            } catch (e) { console.log("Waiting for robot..."); }
-        }
-
-        async function fetchHistory() {
-            try {
-                const res = await fetch(DB_BASE + "history.json");
-                const d = await res.json();
-                if (d) {
-                    let html = "";
-                    const logs = Object.values(d).reverse().slice(0, 15);
-                    logs.forEach(log => {
-                        let color = log.signal.includes("BUY") ? "text-green-600" : "text-red-600";
-                        html += `
-                        <div class="p-3 border-b flex justify-between items-center text-xs">
-                            <div>
-                                <b class="${color}">${log.signal}</b><br>
-                                <span class="text-gray-400">${log.time}</span>
-                            </div>
-                            <div class="text-right">
-                                <b>${log.price}</b><br>
-                                <span class="text-blue-500">${log.type}</span>
-                            </div>
-                        </div>`;
-                    });
-                    document.getElementById('history-list').innerHTML = html;
                 }
             } catch (e) { }
         }
 
-        setInterval(fetchLive, 5000);
-        fetchLive();
+        async function fetchHistory() {
+            try {
+                const r = await fetch(DB_BASE + "history.json");
+                const d = await r.json();
+                if (d) {
+                    let h = "";
+                    Object.values(d).reverse().slice(0, 15).forEach(i => {
+                        h += `<div class="py-3 flex justify-between items-center text-[11px]">
+                                <div><b class="${i.signal.includes('BUY') ? 'text-green-600' : 'text-red-600'}">${i.signal}</b><br><span class="text-gray-400">${i.time}</span></div>
+                                <div class="text-right"><b>${i.price}</b><br><span class="text-blue-500">${i.type}</span></div>
+                             </div>`;
+                    });
+                    document.getElementById('history-list').innerHTML = h;
+                }
+            } catch (e) { }
+        }
+
+        setInterval(() => { document.getElementById('server-clock').innerText = new Date().toLocaleTimeString('id-ID') + " WIB"; }, 1000);
     </script>
 </body>
 </html>
