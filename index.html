@@ -3,136 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AiSignalFx v10.5 PRO</title>
+    <title>AiSignalFx v10.5 PRO - Neural Dashboard</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
         body { background: #ffffff; color: #1e293b; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; }
         .glass-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
         .active-link { background: #eff6ff !important; color: #2563eb !important; border-left: 4px solid #2563eb !important; font-weight: bold; }
+        .nav-item { transition: all 0.2s; cursor: pointer; border-left: 4px solid transparent; }
         #login-overlay { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .page { display: none; }
+        .page { display: none; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
         #main-content { display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #tv_chart_container { height: 500px !important; width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body class="h-screen flex flex-col md:flex-row p-2 md:p-4 gap-4">
-    <div id="login-overlay">
-        <div class="text-center p-10 glass-panel shadow-2xl border-2 border-blue-50">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4"><i class="fas fa-bolt text-3xl text-white"></i></div>
-            <h1 class="text-xl font-black mb-1">AISIGNALFX ACCESS</h1>
-            <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-widest font-bold">Premium Neural v10.5</p>
-            
-            <div id="buttonDiv" class="mb-4"></div>
-            
-            <div class="flex items-center gap-2 my-4 opacity-50"><hr class="flex-1"> <span class="text-[9px]">ATAU</span> <hr class="flex-1"></div>
-            <div id="main-content" class="w-full flex flex-col md:flex-row gap-4">
-        <aside class="w-full md:w-64 glass-panel flex md:flex-col p-4 bg-white border-r">
-            <div class="hidden md:flex items-center gap-2 mb-8 text-blue-600 px-2 font-black uppercase"><i class="fas fa-microchip"></i> AiSignalFx</div>
-            <nav class="flex md:flex-col w-full gap-2">
-                <div onclick="showPage('page-dashboard', this)" class="nav-item active-link p-3 rounded-lg flex items-center gap-3 cursor-pointer"><i class="fas fa-chart-line text-sm"></i><span class="text-xs font-bold uppercase tracking-tighter">Dashboard</span></div>
-                <div onclick="showPage('page-history', this)" class="nav-item p-3 rounded-lg flex items-center gap-3 text-gray-400 hover:bg-gray-50 cursor-pointer"><i class="fas fa-history text-sm"></i><span class="text-xs font-bold uppercase tracking-tighter">History</span></div>
-                <div onclick="showPage('page-billing', this)" class="nav-item p-3 rounded-lg flex items-center gap-3 text-gray-400 hover:bg-gray-50 cursor-pointer"><i class="fas fa-wallet text-sm"></i><span class="text-xs font-bold uppercase tracking-tighter">Billing</span></div>
-            </nav>
-            <div class="mt-auto pt-4 border-t flex items-center gap-3">
-                <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-8 h-8 rounded-full border-2 border-blue-500">
-                <div class="overflow-hidden"><p id="user-name" class="text-[10px] font-black truncate">Guest User</p><p class="text-[8px] text-green-500 font-bold uppercase">Pro Member</p></div>
-            </div>
-        </aside>
 
-        <main class="flex-1 overflow-y-auto space-y-4">
-            <div id="page-dashboard" class="page active space-y-4">
-                <div class="glass-panel p-2 bg-white h-[450px]" id="tv_chart_container"></div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="glass-panel p-4 bg-white border-l-4 border-blue-500 text-center"><p class="text-[9px] text-gray-400 font-black uppercase">Signal</p><h4 id="web-signal" class="text-lg font-black text-blue-600 uppercase">Scanning...</h4></div>
-                    <div class="glass-panel p-4 bg-white border-l-4 border-green-500 text-center"><p class="text-[9px] text-gray-400 font-black uppercase">Entry Price</p><h4 id="web-price" class="text-lg font-black text-gray-700">$0.00</h4></div>
-                    <div class="glass-panel p-4 bg-white border-l-4 border-orange-500 text-center"><p class="text-[9px] text-gray-400 font-black uppercase">Trend Info</p><h4 id="web-zone" class="text-xs font-bold text-gray-700">NEUTRAL</h4></div>
-                </div>
+    <div id="login-overlay">
+        <div class="text-center p-10 glass-panel shadow-2xl border-2 border-blue-50 max-w-sm w-full mx-4">
+            <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-100">
+                <i class="fas fa-bolt text-4xl text-white"></i>
             </div>
-            <div id="page-history" class="page glass-panel p-6 bg-white"><div id="history-list" class="space-y-2"></div></div>
-            <div id="page-billing" class="page glass-panel p-8 bg-white border"><h3 class="font-black text-lg mb-4 uppercase">Subscription</h3><div class="p-6 border-2 border-blue-500 rounded-2xl bg-blue-50 text-center"><p class="text-2xl font-black">Rp 150.000 / bln</p><p class="text-[10px] mt-2 text-gray-500 italic">Transfer via DANA ke 08XX-XXXX-XXXX</p></div></div>
-        </main>
-    </div>
+            <h1 class="text-2xl font-black text-gray-800 mb-1 tracking-tighter">AI SIGNALFX V10.5</h1>
+            <p class="text-[10px] text-gray-400 mb-8 uppercase tracking-[0.2em] font-bold">Neural Trading Systems</p>
             
-            <button onclick="guestLogin()" class="text-[10px] font-bold text-blue-600 hover:underline">MASUK SEBAGAI GUEST (TANPA LOGIN)</button>
+            <div id="buttonDiv" class="flex justify-center mb-4"></div>
+            
+            <div class="flex items-center gap-3 my-6 opacity-30">
+                <hr class="flex-1"> <span class="text-[9px] font-black">OR</span> <hr class="flex-1">
+            </div>
+            
+            <button onclick="enterDashboard('Guest Account', '')" class="text-[10px] font-black text-blue-600 hover:text-blue-800 transition uppercase tracking-widest">
+                Explore as Guest <i class="fas fa-arrow-right ml-1"></i>
+            </button>
         </div>
     </div>
-    <div id="main-content" class="w-full flex flex-col md:flex-row gap-4">
-        <aside class="w-full md:w-64 glass-panel flex md:flex-col p-4 bg-white border-r">
-            <div class="hidden md:flex items-center gap-2 mb-8 text-blue-600 px-2 font-black uppercase"><i class="fas fa-microchip"></i> AiSignalFx</div>
+
+    <div id="main-content" class="w-full h-full flex flex-col md:flex-row gap-4">
+        
+        <aside class="w-full md:w-64 glass-panel flex md:flex-col p-4 bg-white border-r shadow-sm">
+            <div class="hidden md:flex items-center gap-2 mb-10 text-blue-600 px-2">
+                <i class="fas fa-microchip text-xl"></i>
+                <span class="font-black text-lg tracking-tighter uppercase">AiSignalFx</span>
+            </div>
+
             <nav class="flex md:flex-col w-full gap-2">
-                <div onclick="showPage('page-dashboard', this)" class="nav-item active-link p-3 rounded-lg flex items-center gap-3 cursor-pointer"><i class="fas fa-chart-line text-sm"></i><span class="text-xs font-bold uppercase tracking-tighter">Dashboard</span></div>
-                <div onclick="showPage('page-history', this)" class="nav-item p-3 rounded-lg flex items-center gap-3 text-gray-400 hover:bg-gray-50 cursor-pointer"><i class="fas fa-history text-sm"></i><span class="text-xs font-bold uppercase tracking-tighter">History</span></div>
-                <div onclick="showPage('page-billing', this)" class="nav-item p-3 rounded-lg flex items-center gap-3 text-gray-400 hover:bg-gray-50 cursor-pointer"><i class="fas fa-wallet text-sm"></i><span class="text-xs font-bold uppercase tracking-tighter">Billing</span></div>
+                <div onclick="showPage('page-dashboard', this)" class="nav-item active-link p-3 rounded-xl flex items-center gap-3">
+                    <i class="fas fa-chart-pie text-sm"></i><span class="text-xs font-bold uppercase">Dashboard</span>
+                </div>
+                <div onclick="showPage('page-history', this)" class="nav-item p-3 rounded-xl flex items-center gap-3 text-gray-400 hover:bg-gray-50">
+                    <i class="fas fa-list-ul text-sm"></i><span class="text-xs font-bold uppercase">History</span>
+                </div>
+                <div onclick="showPage('page-billing', this)" class="nav-item p-3 rounded-xl flex items-center gap-3 text-gray-400 hover:bg-gray-50">
+                    <i class="fas fa-crown text-sm"></i><span class="text-xs font-bold uppercase">Premium</span>
+                </div>
             </nav>
-            <div class="mt-auto pt-4 border-t flex items-center gap-3">
-                <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-8 h-8 rounded-full border-2 border-blue-500">
-                <div class="overflow-hidden"><p id="user-name" class="text-[10px] font-black truncate">Guest User</p><p class="text-[8px] text-green-500 font-bold uppercase">Pro Member</p></div>
+
+            <div class="mt-auto pt-6 border-t flex items-center gap-3">
+                <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-10 h-10 rounded-full border-2 border-blue-100 bg-blue-50">
+                <div class="overflow-hidden">
+                    <p id="user-name" class="text-[11px] font-black truncate text-gray-800">Analyst User</p>
+                    <div class="flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                        <p class="text-[9px] text-green-600 font-black uppercase">Active PRO</p>
+                    </div>
+                </div>
             </div>
         </aside>
 
         <main class="flex-1 overflow-y-auto space-y-4">
+            
             <div id="page-dashboard" class="page active space-y-4">
-                <div class="glass-panel p-2 bg-white h-[450px]" id="tv_chart_container"></div>
+                <div id="tv_chart_container" class="glass-panel"></div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="glass-panel p-4 bg-white border-l-4 border-blue-500 text-center"><p class="text-[9px] text-gray-400 font-black uppercase">Signal</p><h4 id="web-signal" class="text-lg font-black text-blue-600 uppercase">Scanning...</h4></div>
-                    <div class="glass-panel p-4 bg-white border-l-4 border-green-500 text-center"><p class="text-[9px] text-gray-400 font-black uppercase">Entry Price</p><h4 id="web-price" class="text-lg font-black text-gray-700">$0.00</h4></div>
-                    <div class="glass-panel p-4 bg-white border-l-4 border-orange-500 text-center"><p class="text-[9px] text-gray-400 font-black uppercase">Trend Info</p><h4 id="web-zone" class="text-xs font-bold text-gray-700">NEUTRAL</h4></div>
+                    <div class="glass-panel p-5 bg-white border-l-4 border-blue-500 shadow-sm">
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Live Signal</p>
+                        <h4 id="web-signal" class="text-xl font-black text-blue-600 uppercase">Wait Sync...</h4>
+                    </div>
+                    <div class="glass-panel p-5 bg-white border-l-4 border-green-500 shadow-sm">
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Entry Point</p>
+                        <h4 id="web-price" class="text-xl font-black text-gray-800">$0.00</h4>
+                    </div>
+                    <div class="glass-panel p-5 bg-white border-l-4 border-orange-500 shadow-sm">
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Analysis Mode</p>
+                        <h4 id="web-zone" class="text-sm font-bold text-gray-600 uppercase">Neutral Structure</h4>
+                    </div>
                 </div>
             </div>
-            <div id="page-history" class="page glass-panel p-6 bg-white"><div id="history-list" class="space-y-2"></div></div>
-            <div id="page-billing" class="page glass-panel p-8 bg-white border"><h3 class="font-black text-lg mb-4 uppercase">Subscription</h3><div class="p-6 border-2 border-blue-500 rounded-2xl bg-blue-50 text-center"><p class="text-2xl font-black">Rp 150.000 / bln</p><p class="text-[10px] mt-2 text-gray-500 italic">Transfer via DANA ke 08XX-XXXX-XXXX</p></div></div>
+
+            <div id="page-history" class="page glass-panel p-6 bg-white min-h-[400px]">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <h3 class="font-black text-gray-800 uppercase tracking-tight">Signal History Log</h3>
+                    <span class="text-[9px] bg-gray-100 px-2 py-1 rounded font-bold text-gray-400 uppercase">Last 10 Signals</span>
+                </div>
+                <div id="history-list" class="space-y-3">
+                    <p class="text-center text-xs text-gray-400 mt-10 italic">No trade data found. Please wait for next signal.</p>
+                </div>
+            </div>
+
+            <div id="page-billing" class="page glass-panel p-8 bg-white text-center">
+                <i class="fas fa-gem text-4xl text-orange-400 mb-4"></i>
+                <h3 class="font-black text-2xl text-gray-800 mb-2 uppercase italic">Elevate Your Trading</h3>
+                <p class="text-gray-400 text-sm mb-10">Get 98% accuracy signals with advanced SMC/ICT analysis.</p>
+                
+                <div class="max-w-md mx-auto p-8 border-4 border-blue-600 rounded-3xl bg-blue-50 shadow-2xl">
+                    <span class="bg-blue-600 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase">Most Popular</span>
+                    <h4 class="font-black text-xl mt-4">NEURAL PRO ACCESS</h4>
+                    <div class="my-6">
+                        <span class="text-4xl font-black">Rp 150.000</span>
+                        <span class="text-gray-400 text-xs">/ month</span>
+                    </div>
+                    <div class="text-left space-y-3 mb-8">
+                        <div class="flex items-center gap-2 text-xs font-bold text-gray-600"><i class="fas fa-check text-green-500"></i> Auto Signal XAUUSD (Gold)</div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-gray-600"><i class="fas fa-check text-green-500"></i> Smart Money Concepts (SMC) Integration</div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-gray-600"><i class="fas fa-check text-green-500"></i> Priority Server Sync</div>
+                    </div>
+                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl transition shadow-lg">WHATSAPP ADMIN</button>
+                </div>
+            </div>
+
         </main>
     </div>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
     <script>
-        function guestLogin() {
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('main-content').style.display = 'flex';
-            initDashboard();
+        const FIREBASE_URL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+        // FUNGSI UTAMA UNTUK MASUK
+        function enterDashboard(name, pic) {
+            document.getElementById('login-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-content').style.display = 'flex';
+                document.getElementById('user-name').innerText = name;
+                if(pic) document.getElementById('user-pic').src = pic;
+                
+                // Load TradingView & Start Sync
+                initApp();
+            }, 500);
         }
 
+        // GOOGLE LOGIN HANDLER
         function handleCredentialResponse(response) {
-            const data = JSON.parse(atob(response.credential.split('.')[1]));
-            document.getElementById('user-name').innerText = data.name;
-            document.getElementById('user-pic').src = data.picture;
-            guestLogin();
+            try {
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                enterDashboard(payload.name, payload.picture);
+            } catch (e) {
+                console.error("Auth Error:", e);
+                enterDashboard("Standard User", "");
+            }
         }
 
         window.onload = function () {
-            google.accounts.id.initialize({ client_id: "721665427388-7m47k56r09a06hpt8m6q7u9594n907u0.apps.googleusercontent.com", callback: handleCredentialResponse });
-            google.accounts.id.renderButton(document.getElementById("buttonDiv"), { theme: "outline", size: "large" });
+            google.accounts.id.initialize({
+                client_id: "721665427388-7m47k56r09a06hpt8m6q7u9594n907u0.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(document.getElementById("buttonDiv"), { theme: "outline", size: "large", width: "250" });
         };
 
-        function showPage(pId, el) {
+        function showPage(pageId, navEl) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-link'));
-            el.classList.add('active-link');
-            if(pId === 'page-history') fetchHistory();
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-link', 'text-blue-600'));
+            navEl.classList.add('active-link');
+            if(pageId === 'page-history') fetchHistory();
         }
 
-        function initDashboard() {
-            new TradingView.widget({"autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15", "theme": "light", "style": "1", "container_id": "tv_chart_container"});
-            setInterval(fetchLive, 4000);
+        function initApp() {
+            // Widget TradingView
+            if(typeof TradingView !== 'undefined') {
+                new TradingView.widget({
+                    "autosize": true,
+                    "symbol": "OANDA:XAUUSD",
+                    "interval": "15",
+                    "timezone": "Asia/Jakarta",
+                    "theme": "light",
+                    "style": "1",
+                    "locale": "id",
+                    "container_id": "tv_chart_container",
+                    "hide_top_toolbar": true,
+                    "save_image": false
+                });
+            }
+            // Start Loop Data
+            setInterval(fetchLiveSignal, 5000);
+            fetchLiveSignal();
         }
 
-        const DB = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/signal.json";
-        
-        async function fetchLive() {
+        async function fetchLiveSignal() {
             try {
-                const res = await fetch(DB);
-                const d = await res.json();
-                if(d) {
-                    document.getElementById('web-signal').innerText = d.signal;
-                    document.getElementById('web-price').innerText = d.price;
-                    document.getElementById('web-zone').innerText = d.trend;
-                    // Auto Color Signal
-                    const s = document.getElementById('web-signal');
-                    if(d.signal.includes("BUY")) s.className = "text-lg font-black text-green-600";
-                    else if(d.signal.includes("SELL")) s.className = "text-lg font-black text-red-600";
+                const response = await fetch(`${FIREBASE_URL}signal.json`);
+                const data = await response.json();
+                if(data) {
+                    const sigEl = document.getElementById('web-signal');
+                    sigEl.innerText = data.signal;
+                    document.getElementById('web-price').innerText = data.price;
+                    document.getElementById('web-zone').innerText = data.trend;
+                    
+                    // Dynamic Color
+                    if(data.signal.includes("BUY")) sigEl.className = "text-xl font-black text-green-600 uppercase";
+                    else if(data.signal.includes("SELL")) sigEl.className = "text-xl font-black text-red-600 uppercase";
+                    else sigEl.className = "text-xl font-black text-blue-600 uppercase";
+                }
+            } catch (err) { console.log("Firebase Sync Error"); }
+        }
+
+        async function fetchHistory() {
+            try {
+                const response = await fetch(`${FIREBASE_URL}history.json`);
+                const data = await response.json();
+                if(data) {
+                    let html = "";
+                    Object.values(data).reverse().slice(0, 10).forEach(val => {
+                        const isBuy = val.signal.includes("BUY");
+                        html += `
+                        <div class="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:shadow-md transition">
+                            <div class="flex gap-3 items-center">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center ${isBuy ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}">
+                                    <i class="fas ${isBuy ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-tighter">${val.time}</p>
+                                    <h5 class="text-xs font-black ${isBuy ? 'text-green-600' : 'text-red-600'}">${val.signal} @ ${val.price}</h5>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-bold text-gray-700">${val.pips || '0 Pips'}</p>
+                                <p class="text-[9px] font-bold text-blue-500 uppercase">${val.type}</p>
+                            </div>
+                        </div>`;
+                    });
+                    document.getElementById('history-list').innerHTML = html;
                 }
             } catch (e) {}
         }
