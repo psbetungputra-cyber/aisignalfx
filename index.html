@@ -73,20 +73,27 @@
                 </div>
                 <button onclick="toggleSidebar()" class="md:hidden text-gray-400"><i class="fas fa-times text-xl"></i></button>
             </div>
-            
-            <nav class="space-y-2">
-    <div onclick="switchPage('page-dash', this)" class="nav-item nav-active p-4 cursor-pointer">
-        <span class="font-bold uppercase tracking-tight">Dashboard</span>
+            <div id="page-dash" class="page active">
+                <div id="page-dash" class="page active">
     </div>
 
-    <div onclick="switchPage('page-hist', this)" class="nav-item p-4 cursor-pointer text-gray-400 hover:bg-gray-50">
-        <span class="font-bold uppercase tracking-tight">History</span>
+<div id="page-hist" class="page hidden p-4">
+    <h3 class="text-xs font-black uppercase mb-4 italic text-blue-600">Signal History</h3>
+    <div id="history-list" class="space-y-3">
+        <p class="text-[10px] text-gray-400 italic">Memuat riwayat...</p>
     </div>
+</div>
 
-    <div onclick="switchPage('page-vip', this)" class="nav-item p-4 cursor-pointer text-gray-400 hover:bg-gray-50">
-        <span class="font-bold uppercase tracking-tight">VIP Premium</span>
+<div id="page-vip" class="page hidden p-8 text-center">
+    <i class="fas fa-crown text-4xl text-yellow-500 mb-4"></i>
+    <h3 class="text-xl font-black mb-2 italic">VIP PREMIUM</h3>
+    <p class="text-[10px] text-gray-500 mb-6">Dapatkan sinyal akurasi 95% dengan SMC & Institutional Volume.</p>
+    <div class="bg-blue-50 p-6 rounded-3xl border-2 border-blue-600">
+        <p class="text-2xl font-black mb-4">Rp 150.000 <span class="text-xs text-gray-400">/Bulan</span></p>
+        <button class="w-full bg-blue-600 text-white font-black py-3 rounded-xl shadow-lg">HUBUNGI ADMIN</button>
     </div>
-</nav>
+</div>
+
 
             <div class="mt-auto pt-6 border-t flex items-center gap-4">
                 <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-12 h-12 rounded-full border-2 border-blue-500 bg-blue-50">
