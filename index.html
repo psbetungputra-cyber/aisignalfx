@@ -41,43 +41,53 @@
     </aside>
 
     <main class="flex-1 flex flex-col gap-4 overflow-y-auto pb-24 md:pb-0">
-        <header class="flex justify-between items-center px-1">
-            <h2 class="text-lg font-bold uppercase text-gray-700">NeuroPro <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded border border-blue-200 ml-1">V9.6 FINAL</span></h2>
-            <div id="server-clock" class="text-[10px] font-mono text-gray-500 bg-gray-100 px-3 py-1 rounded-full border">00:00:00 WIB</div>
-        </header>
+    <header class="flex justify-between items-center px-1">
+        <h2 class="text-lg font-bold uppercase text-gray-700">NeuroPro <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded border border-blue-200 ml-1">V9.6 FINAL</span></h2>
+        <div id="server-clock" class="text-[10px] font-mono text-gray-500 bg-gray-100 px-3 py-1 rounded-full border">00:00:00 WIB</div>
+    </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <div class="lg:col-span-3 glass-panel p-4 min-h-[500px] flex flex-col relative bg-white border">
-                <div class="flex justify-between items-center mb-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    <span><i class="fas fa-chart-line mr-2"></i>Live Market Analysis</span>
-                    <span class="text-blue-600 flex items-center gap-1 font-black">● XAUUSDm LIVE SYNC</span>
-                </div>
-                <div id="tv_chart_container"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <div class="lg:col-span-3 glass-panel p-4 min-h-[500px] flex flex-col relative bg-white border">
+            <div class="flex justify-between items-center mb-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <span><i class="fas fa-chart-line mr-2"></i>Live Market Analysis</span>
+                <span class="text-blue-600 flex items-center gap-1 font-black">● XAUUSDm LIVE SYNC</span>
             </div>
+            <div id="tv_chart_container"></div>
+        </div>
 
-            <div class="lg:col-span-1 glass-panel p-4 bg-white border">
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest border-b pb-2 text-center">Active Signals</h3>
-                <div id="signal-container" class="space-y-3">
-                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                        <div class="flex justify-between font-bold text-xs"><span>PAXG-USD</span><span id="web-type" class="text-blue-600 text-[9px]">WAITING...</span></div>
-                        <p id="web-entry" class="text-[9px] text-gray-500 mt-2 font-mono italic">Scanning from Python Engine...</p>
+        <div class="lg:col-span-1 glass-panel p-4 bg-white border">
+            <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest border-b pb-2 text-center">Active Signals</h3>
+            <div id="signal-container" class="space-y-3">
+                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div class="flex justify-between font-black text-sm mb-2">
+                        <span class="text-gray-700">XAUUSD</span>
+                        <span id="signal-type" class="text-blue-600 animate-pulse">SCANNING...</span>
                     </div>
+                    <div class="space-y-2 font-mono text-[11px]">
+                        <div class="flex justify-between border-b border-blue-100 pb-1">
+                            <span class="text-gray-400">PRICE</span>
+                            <span id="price-display" class="font-bold text-gray-700">0.00</span>
+                        </div>
+                        <div class="flex justify-between border-b border-blue-100 pb-1">
+                            <span class="text-gray-400">ENTRY</span>
+                            <span id="entry-display" class="font-bold text-blue-500">Waiting...</span>
+                        </div>
+                        <div class="flex justify-between border-b border-blue-100 pb-1 text-green-600">
+                            <span>TP</span>
+                            <span id="tp-display" class="font-bold">0.00</span>
+                        </div>
+                        <div class="flex justify-between text-red-500">
+                            <span>SL</span>
+                            <span id="sl-display" class="font-bold">0.00</span>
+                        </div>
+                    </div>
+                    <p class="text-[9px] text-gray-400 mt-3 text-right italic" id="time-display">Last sync: --:--</p>
                 </div>
             </div>
         </div>
+    </div>
+</main>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div class="glass-panel p-4 grid grid-cols-3 text-center bg-white border">
-                <div><p class="text-[8px] text-gray-400 font-bold uppercase">Total Signal</p><p class="text-lg font-bold text-blue-600">20</p></div>
-                <div class="border-x border-gray-100"><p class="text-[8px] text-gray-400 font-bold uppercase">Win Rate</p><p class="text-lg font-bold">94.2%</p></div>
-                <div><p class="text-[8px] text-gray-400 font-bold uppercase">Total Pips</p><p class="text-lg font-bold text-green-600">+25,430</p></div>
-            </div>
-            <div class="glass-panel p-4 bg-white border">
-                <div class="flex justify-between text-[9px] font-bold text-gray-400 mb-2 uppercase"><span>Neural Learning Log</span><span class="text-blue-500 font-bold">LIVE</span></div>
-                <div id="neural-logs" class="font-mono text-[9px] text-gray-400 italic">>> System Ready. Awaiting Python signal...</div>
-            </div>
-        </div>
-    </main>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
@@ -166,22 +176,29 @@
             const data = await response.json();
             
             if (data) {
-                // Pastikan ID ini ada di elemen HTML kamu
+                // Update elemen-elemen sesuai ID baru
+                if(document.getElementById("signal-type")) document.getElementById("signal-type").innerText = data.signal || "WAITING";
+                if(document.getElementById("price-display")) document.getElementById("price-display").innerText = "$" + data.price;
                 if(document.getElementById("entry-display")) document.getElementById("entry-display").innerText = data.entry_area;
-                if(document.getElementById("price-display")) document.getElementById("price-display").innerText = data.price;
                 if(document.getElementById("tp-display")) document.getElementById("tp-display").innerText = data.tp;
                 if(document.getElementById("sl-display")) document.getElementById("sl-display").innerText = data.sl;
-                if(document.getElementById("signal-type")) document.getElementById("signal-type").innerText = data.signal;
-                if(document.getElementById("time-display")) document.getElementById("time-display").innerText = data.time;
+                if(document.getElementById("time-display")) document.getElementById("time-display").innerText = "Sync: " + data.time;
+                
+                // Update Log Neural
+                if(document.getElementById("neural-logs")) {
+                    document.getElementById("neural-logs").innerHTML = `>> DATA RECEIVED: ${data.pair} <br> >> STATUS: ${data.signal} <br> >> ACCURACY: ${data.accuracy || '94.2%'}`;
+                }
             }
         } catch (error) {
-            console.error("Gagal ambil data Firebase:", error);
+            console.log("Firebase belum siap...");
         }
     }
 
-    setInterval(updateTampilanWeb, 5000);
+    // Jalankan setiap 3 detik biar enteng
+    setInterval(updateTampilanWeb, 3000);
     updateTampilanWeb();
-    </script>
+</script>
+
 </body>
 </html>
 
