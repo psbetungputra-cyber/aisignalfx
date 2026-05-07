@@ -1,256 +1,172 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AiSignalFx v10.5 PRO</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiSignalFx Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-
+    <script src="https://s3.tradingview.com/tv.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        body { background: #ffffff; color: #1e293b; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
-        .glass-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
-        
-        /* CSS UNTUK SIDEBAR HP */
-        #sidebar { 
-            transition: all 0.3s ease-in-out; 
-            z-index: 50;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #ffffff; }
+        .page { display: none; width: 100%; }
+        .page.active { display: block !important; }
+        .nav-active { background: #eff6ff; border-right: 4px solid #2563eb; color: #2563eb !important; }
+        #sidebar { transition: all 0.3s ease; z-index: 50; }
         @media (max-width: 767px) {
-            #sidebar { 
-                position: fixed; 
-                left: -100%; 
-                top: 0; 
-                bottom: 0; 
-                width: 280px; 
-                background: white; 
-                box-shadow: 20px 0 50px rgba(0,0,0,0.1);
-            }
-            #sidebar.open { left: 0; }
+            #sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 260px; background: white; }
+            #sidebar.open { left: 0; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
         }
-
-        #tv_chart_container { height: 450px !important; width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; }
-        .active-link { background: #eff6ff !important; color: #2563eb !important; border-left: 4px solid #2563eb !important; font-weight: bold; }
-        #login-overlay { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        #main-content { display: none; }
-        .page { display: none; }
-        .page.active { display: block; }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50">
+<body class="flex bg-gray-50 overflow-hidden">
 
-    <div id="login-overlay">
-        <div class="text-center p-8 glass-panel shadow-2xl border-2 border-blue-50 max-w-xs w-full">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i class="fas fa-bolt text-3xl text-white"></i>
+    <aside id="sidebar" class="w-64 h-screen border-r bg-white flex flex-col shrink-0">
+        <div class="p-6 flex items-center justify-between">
+            <div class="text-blue-600 font-black italic flex items-center gap-2">
+                <i class="fas fa-microchip text-xl"></i> AISIGNALFX
             </div>
-            <h1 class="text-xl font-black mb-6 uppercase tracking-tighter">AiSignalFx v10.5</h1>
-            <div id="buttonDiv" class="flex justify-center mb-6"></div>
-            <button onclick="enterDashboard('Guest User', '')" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-blue-600">
-                Skip to Dashboard <i class="fas fa-chevron-right ml-1"></i>
-            </button>
+            <button onclick="toggleMenu()" class="md:hidden text-gray-400"><i class="fas fa-times"></i></button>
         </div>
-    </div>
 
-    <div id="main-content" class="flex flex-col md:flex-row h-screen">
-        
-        <header class="md:hidden flex items-center justify-between p-4 bg-white border-b sticky top-0 z-40">
-            <button onclick="toggleSidebar()" class="text-gray-600 text-xl"><i class="fas fa-bars"></i></button>
-            <div class="font-black text-blue-600 text-sm uppercase italic">AiSignalFx PRO</div>
-            <div class="w-8 h-8 rounded-full border border-blue-500 overflow-hidden">
-                <img id="user-pic-mobile" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full object-cover">
+        <nav class="flex-1 px-4 space-y-1 mt-4">
+            <div onclick="switchPage('page-dash', this)" class="nav-item nav-active p-4 cursor-pointer flex items-center gap-3 rounded-xl transition-all">
+                <i class="fas fa-chart-line w-5"></i> <span class="text-[10px] font-black uppercase tracking-widest">Dashboard</span>
             </div>
+            <div onclick="switchPage('page-hist', this)" class="nav-item p-4 cursor-pointer flex items-center gap-3 rounded-xl text-gray-400 transition-all">
+                <i class="fas fa-history w-5"></i> <span class="text-[10px] font-black uppercase tracking-widest">History</span>
+            </div>
+            <div onclick="switchPage('page-vip', this)" class="nav-item p-4 cursor-pointer flex items-center gap-3 rounded-xl text-gray-400 transition-all">
+                <i class="fas fa-crown w-5"></i> <span class="text-[10px] font-black uppercase tracking-widest">VIP Premium</span>
+            </div>
+        </nav>
+
+        <div class="p-6 border-t">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">GU</div>
+                <div>
+                    <p class="text-[10px] font-black uppercase">Guest User</p>
+                    <p class="text-[8px] text-green-500 font-bold">ACTIVE MEMBER</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 h-screen overflow-y-auto relative">
+        <header class="md:hidden p-4 bg-white border-b flex justify-between items-center sticky top-0 z-40">
+            <button onclick="toggleMenu()" class="p-2 text-blue-600"><i class="fas fa-bars text-xl"></i></button>
+            <div class="font-black italic text-blue-600">AISIGNALFX</div>
+            <div class="w-8"></div>
         </header>
 
-        <aside id="sidebar" class="flex flex-col p-6 border-r shrink-0">
-            <div class="flex justify-between items-center mb-10">
-                <div class="hidden md:flex items-center gap-2 text-blue-600 font-black uppercase italic">
-                    <i class="fas fa-microchip"></i> AiSignalFx
-                </div>
-                <button onclick="toggleSidebar()" class="md:hidden text-gray-400"><i class="fas fa-times text-xl"></i></button>
-            </div>
+        <div class="p-4 md:p-8">
             <div id="page-dash" class="page active">
-                <div id="page-dash" class="page active">
+                <div class="bg-white p-2 rounded-3xl border shadow-sm mb-6 overflow-hidden">
+                    <div id="tv-chart" class="h-[400px] md:h-[550px]"></div>
                 </div>
-                <div id="page-dash" class="page active">
-   </div> 
-
-<div id="page-hist" class="page hidden p-4">
-    <h3 class="text-xs font-black uppercase mb-4 italic text-blue-600">Signal History</h3>
-    <div id="history-list" class="space-y-3">
-        <p class="text-[10px] text-gray-400 italic">Memuat riwayat...</p>
-    </div>
-</div>
-
-<div id="page-vip" class="page hidden p-8 text-center">
-    <i class="fas fa-crown text-4xl text-yellow-500 mb-4"></i>
-    <h3 class="text-xl font-black mb-2 italic">VIP PREMIUM</h3>
-    <p class="text-[10px] text-gray-500">Dapatkan akses sinyal eksklusif.</p>
-</div>
-            <div class="mt-auto pt-6 border-t flex items-center gap-4">
-                <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-12 h-12 rounded-full border-2 border-blue-500 bg-blue-50">
-                <div class="overflow-hidden">
-                    <p id="user-name" class="text-xs font-black truncate text-gray-800 uppercase">Analyst</p>
-                    <p class="text-[9px] text-green-500 font-bold uppercase tracking-widest">Active Member</p>
-                </div>
-            </div>
-        </aside>
-
-        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
-            
-            <div id="page-dashboard" class="page active space-y-6">
-                <div id="tv_chart_container" class="shadow-sm"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="glass-panel p-6 border-l-8 border-blue-500 shadow-sm flex flex-col items-center text-center">
-                        <span class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">SMC SIGNAL</span>
-                        <h4 id="web-signal" class="text-2xl font-black text-blue-600 uppercase">WAITING...</h4>
+                    <div class="bg-white p-6 rounded-3xl border-b-4 border-blue-500 shadow-sm text-center">
+                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1">SMC Signal</p>
+                        <h2 id="web-signal" class="text-2xl font-black text-blue-600">WAITING</h2>
                     </div>
-                    <div class="glass-panel p-6 border-l-8 border-green-500 shadow-sm flex flex-col items-center text-center">
-                        <span class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">ENTRY AT</span>
-                        <h4 id="web-price" class="text-2xl font-black text-gray-800">$0.00</h4>
+                    <div class="bg-white p-6 rounded-3xl border-b-4 border-green-500 shadow-sm text-center">
+                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1">Entry At</p>
+                        <h2 id="web-price" class="text-2xl font-black text-gray-800">$0.00</h2>
                     </div>
-                    <div class="glass-panel p-6 border-l-8 border-orange-500 shadow-sm flex flex-col items-center text-center">
-                        <span class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">STRUCTURE</span>
-                        <h4 id="web-zone" class="text-sm font-bold text-gray-600 uppercase">SCANNING MARKET</h4>
+                    <div class="bg-white p-6 rounded-3xl border-b-4 border-orange-500 shadow-sm text-center">
+                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1">Structure</p>
+                        <h2 id="web-zone" class="text-2xl font-black text-gray-800 italic uppercase">SYNCING</h2>
                     </div>
                 </div>
             </div>
 
-            <div id="page-history" class="page glass-panel p-6 bg-white min-h-[400px]">
-                <h3 class="font-black text-gray-800 uppercase border-b pb-4 mb-6">Trade History</h3>
-                <div id="history-list" class="space-y-3"></div>
-            </div>
-
-            <div id="page-billing" class="page glass-panel p-8 bg-white text-center">
-                <h3 class="font-black text-2xl mb-2 text-blue-600 uppercase">Upgrade to PRO</h3>
-                <p class="text-gray-400 text-sm mb-8 italic">Get faster data sync and premium ICT signals.</p>
-                <div class="max-w-xs mx-auto p-8 border-4 border-blue-600 rounded-3xl bg-blue-50">
-                    <p class="text-3xl font-black">Rp 150k</p>
-                    <p class="text-xs mb-6">Per 30 Days</p>
-                    <button class="w-full bg-blue-600 text-white font-black py-3 rounded-xl shadow-lg">CHAT ADMIN</button>
+            <div id="page-hist" class="page">
+                <h2 class="text-xl font-black italic mb-6">SIGNAL HISTORY</h2>
+                <div id="history-list" class="space-y-3 max-w-2xl">
+                    <p class="text-center py-10 text-gray-400 text-xs italic">Loading history dari server...</p>
                 </div>
             </div>
-        </main>
-    </div>
+
+            <div id="page-vip" class="page text-center py-20">
+                <i class="fas fa-crown text-6xl text-yellow-500 mb-6 drop-shadow-lg"></i>
+                <h2 class="text-3xl font-black italic mb-2 uppercase">VIP Access</h2>
+                <p class="text-gray-400 text-sm mb-8 px-4 uppercase font-bold tracking-tighter">Sinyal Akurasi 95% - No Repaint - SMC Concept</p>
+                <div class="max-w-sm mx-auto bg-blue-600 p-8 rounded-[40px] text-white shadow-2xl">
+                    <p class="text-3xl font-black mb-2">Rp 150.000 <span class="text-xs font-normal">/bulan</span></p>
+                    <button class="w-full mt-4 bg-white text-blue-600 font-black py-4 rounded-2xl shadow-lg uppercase text-[10px]">Hubungi Admin Via WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // FUNGSI BUKA TUTUP SIDEBAR HP
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
+        const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
-        function enterDashboard(name, pic) {
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('main-content').style.display = 'flex';
-            if(name) document.getElementById('user-name').innerText = name;
-            if(pic) {
-                document.getElementById('user-pic').src = pic;
-                document.getElementById('user-pic-mobile').src = pic;
-            }
-            
-            setTimeout(() => {
-                new TradingView.widget({
-    "autosize": true,
-    "symbol": "OANDA:XAUUSD",
-    "interval": "15",
-    "timezone": "Asia/Jakarta",
-    "theme": "light",
-    "style": "1",
-    "locale": "id",
-    "container_id": "tv_chart_container",
-    /* --- PENGATURAN MENU LENGKAP --- */
-    "hide_top_toolbar": false,     // Munculkan menu Timeframe & Indikator
-    "hide_side_toolbar": false,    // Munculkan alat gambar di samping
-    "allow_symbol_change": true,   // Bisa ganti pair mata uang
-    "enable_publishing": false,
-    "withdateranges": true,        // Munculkan range waktu di bawah
-    "save_image": false,
-    "details": true,               // Detail harga di kanan
-    "hotlist": true,               // Daftar harga populer
-    "calendar": true,              // Kalender ekonomi
-    "show_popup_button": true,     // Tombol buka di tab baru
-    "popup_width": "1000",
-    "popup_height": "650"
-});
-                setInterval(fetchData, 5000);
-            }, 300);
-        }
-
-        function handleCredentialResponse(response) {
-            const data = JSON.parse(atob(response.credential.split('.')[1]));
-            enterDashboard(data.name, data.picture);
-        }
-
-        window.onload = function () {
-            google.accounts.id.initialize({
-                client_id: "721665427388-7m47k56r09a06hpt8m6q7u9594n907u0.apps.googleusercontent.com",
-                callback: handleCredentialResponse
-            });
-            google.accounts.id.renderButton(document.getElementById("buttonDiv"), { theme: "outline", size: "large" });
-        };
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
 
         function switchPage(pId, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pId).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
-    el.classList.add('nav-active');
-
-    // Tambahkan ini: Kalau menu History diklik, jalankan fungsi load
-    if(pId === 'page-hist') {
-        loadHistory();
-    }
-}
-async function loadHistory() {
-    const list = document.getElementById('history-list');
-    list.innerHTML = '<p class="text-center text-[10px] text-blue-500 animate-pulse">Loading signals...</p>';
-    
-    try {
-        // Kita ambil data dari Firebase (folder history)
-        const res = await fetch("https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/history.json");
-        const data = await res.json();
-        
-        if(data) {
-            list.innerHTML = ""; // Bersihkan tulisan loading
-            // Kita looping datanya supaya muncul satu-satu
-            Object.values(data).reverse().forEach(item => {
-                const color = item.signal.includes("BUY") ? "text-green-600" : "text-red-600";
-                list.innerHTML += `
-                    <div class="p-3 border rounded-xl flex justify-between items-center bg-gray-50 shadow-sm">
-                        <div>
-                            <p class="font-black ${color} text-[11px]">${item.signal}</p>
-                            <p class="text-[9px] text-gray-400 font-bold">${item.time || 'Today'}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[11px] font-black italic">$${item.price}</p>
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            list.innerHTML = '<p class="text-center text-[10px] text-gray-400 mt-10 italic">Belum ada history sinyal tersimpan.</p>';
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+            el.classList.add('nav-active');
+            if(pId === 'page-hist') loadHistory();
+            if(window.innerWidth < 768) toggleMenu();
         }
-    } catch(e) {
-        list.innerHTML = '<p class="text-center text-[10px] text-red-400 mt-10">Gagal memuat history.</p>';
-    }
-}
+
+        // Widget TradingView
+        new TradingView.widget({
+            "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15",
+            "timezone": "Etc/UTC", "theme": "light", "style": "1",
+            "locale": "en", "toolbar_bg": "#f1f3f6", "container_id": "tv-chart"
+        });
+
+        // Sync Dashboard
         async function fetchData() {
             try {
-                const res = await fetch("https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/signal.json");
+                const res = await fetch(fbURL + "signal.json");
                 const d = await res.json();
                 if(d) {
                     document.getElementById('web-signal').innerText = d.signal;
-                    document.getElementById('web-price').innerText = d.price;
+                    document.getElementById('web-price').innerText = "$" + d.price;
                     document.getElementById('web-zone').innerText = d.trend;
-                    const s = document.getElementById('web-signal');
-                    if(d.signal.includes("BUY")) s.className = "text-2xl font-black text-green-600";
-                    else if(d.signal.includes("SELL")) s.className = "text-2xl font-black text-red-600";
+                    const sigEl = document.getElementById('web-signal');
+                    if(d.signal.includes("BUY")) sigEl.className = "text-2xl font-black text-green-600 animate-pulse";
+                    else if(d.signal.includes("SELL")) sigEl.className = "text-2xl font-black text-red-600 animate-pulse";
                 }
             } catch(e) {}
+        }
+        setInterval(fetchData, 3000);
+
+        // Load History
+        async function loadHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '<p class="text-center text-blue-500 animate-pulse text-[10px]">FETCHING DATA...</p>';
+            try {
+                const res = await fetch(fbURL + "history.json");
+                const data = await res.json();
+                if(data) {
+                    list.innerHTML = "";
+                    Object.values(data).reverse().slice(0,10).forEach(item => {
+                        const color = item.signal.includes("BUY") ? "text-green-600" : "text-red-600";
+                        list.innerHTML += `
+                            <div class="bg-white p-4 rounded-2xl border flex justify-between items-center shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-1 h-8 rounded-full ${item.signal.includes("BUY") ? 'bg-green-500' : 'bg-red-500'}"></div>
+                                    <div>
+                                        <p class="font-black ${color} text-[11px] uppercase">${item.signal}</p>
+                                        <p class="text-[8px] text-gray-400 font-bold uppercase">${item.time || 'NOW'}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[13px] font-black italic">$${item.price}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else { list.innerHTML = '<p class="text-center py-10 text-gray-400 text-[10px]">BELUM ADA HISTORY.</p>'; }
+            } catch(e) { list.innerHTML = '<p class="text-center py-10 text-red-400 text-[10px]">ERROR CONNECTING.</p>'; }
         }
     </script>
 </body>
