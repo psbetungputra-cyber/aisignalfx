@@ -80,6 +80,17 @@
                             <span>SL</span>
                             <span id="sl-display" class="font-bold">0.00</span>
                         </div>
+                        <div style="margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
+    <strong style="display: block; font-size: 12px; color: #888;">AI ANALYSIS:</strong>
+    <span id="display-note" style="font-size: 13px; color: #333;">Memuat analisa...</span>
+</div>
+
+<script>
+// Tambahkan ini di bagian script pengambilan data Firebase kamu
+// Pastikan variabel 'data' adalah hasil dari fetch Firebase
+document.getElementById('display-note').innerText = data.note;
+</script>
+
                     </div>
                     <p class="text-[9px] text-gray-400 mt-3 text-right italic" id="time-display">Last sync: --:--</p>
                 </div>
