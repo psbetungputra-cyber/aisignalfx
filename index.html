@@ -2,100 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AiSignalFx Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://s3.tradingview.com/tv.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #ffffff; }
-        .page { display: none; width: 100%; }
+        body { font-family: 'Inter', sans-serif; background: #ffffff; overflow: hidden; }
+        .page { display: none; width: 100%; height: 100%; }
         .page.active { display: block !important; }
-        .nav-active { background: #eff6ff; border-right: 4px solid #2563eb; color: #2563eb !important; }
+        .nav-active { background: #eff6ff; border-right: 4px solid #2563eb; color: #2563eb !important; font-weight: 900; }
         #sidebar { transition: all 0.3s ease; z-index: 50; }
         @media (max-width: 767px) {
-            #sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 260px; background: white; }
-            #sidebar.open { left: 0; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+            #sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 280px; background: white; }
+            #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.1); }
         }
     </style>
 </head>
-<body class="flex bg-gray-50 overflow-hidden">
+<body class="flex bg-gray-50">
 
     <aside id="sidebar" class="w-64 h-screen border-r bg-white flex flex-col shrink-0">
         <div class="p-6 flex items-center justify-between">
-            <div class="text-blue-600 font-black italic flex items-center gap-2">
-                <i class="fas fa-microchip text-xl"></i> AISIGNALFX
+            <div class="flex items-center gap-2 text-blue-600 font-black italic text-lg">
+                <i class="fas fa-microchip"></i> AISIGNALFX
             </div>
             <button onclick="toggleMenu()" class="md:hidden text-gray-400"><i class="fas fa-times"></i></button>
         </div>
 
-        <nav class="flex-1 px-4 space-y-1 mt-4">
-            <div onclick="switchPage('page-dash', this)" class="nav-item nav-active p-4 cursor-pointer flex items-center gap-3 rounded-xl transition-all">
-                <i class="fas fa-chart-line w-5"></i> <span class="text-[10px] font-black uppercase tracking-widest">Dashboard</span>
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            <div onclick="switchPage('page-dash', this)" class="nav-item nav-active p-4 cursor-pointer flex items-center gap-3 rounded-xl">
+                <i class="fas fa-chart-line w-5"></i> <span class="text-xs uppercase font-bold tracking-widest">Dashboard</span>
             </div>
-            <div onclick="switchPage('page-hist', this)" class="nav-item p-4 cursor-pointer flex items-center gap-3 rounded-xl text-gray-400 transition-all">
-                <i class="fas fa-history w-5"></i> <span class="text-[10px] font-black uppercase tracking-widest">History</span>
+            <div onclick="switchPage('page-hist', this)" class="nav-item p-4 cursor-pointer flex items-center gap-3 rounded-xl text-gray-400">
+                <i class="fas fa-history w-5"></i> <span class="text-xs uppercase font-bold tracking-widest">History</span>
             </div>
-            <div onclick="switchPage('page-vip', this)" class="nav-item p-4 cursor-pointer flex items-center gap-3 rounded-xl text-gray-400 transition-all">
-                <i class="fas fa-crown w-5"></i> <span class="text-[10px] font-black uppercase tracking-widest">VIP Premium</span>
+            <div onclick="switchPage('page-vip', this)" class="nav-item p-4 cursor-pointer flex items-center gap-3 rounded-xl text-gray-400">
+                <i class="fas fa-crown w-5"></i> <span class="text-xs uppercase font-bold tracking-widest">VIP Premium</span>
             </div>
         </nav>
 
-        <div class="p-6 border-t">
+        <div class="p-6 border-t mt-auto">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">GU</div>
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-10 h-10 rounded-full border-2 border-blue-500 p-0.5">
                 <div>
                     <p class="text-[10px] font-black uppercase">Guest User</p>
-                    <p class="text-[8px] text-green-500 font-bold">ACTIVE MEMBER</p>
+                    <p class="text-[8px] text-green-500 font-bold uppercase">Active Member</p>
                 </div>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 h-screen overflow-y-auto relative">
+    <main class="flex-1 h-screen overflow-y-auto relative flex flex-col">
         <header class="md:hidden p-4 bg-white border-b flex justify-between items-center sticky top-0 z-40">
-            <button onclick="toggleMenu()" class="p-2 text-blue-600"><i class="fas fa-bars text-xl"></i></button>
-            <div class="font-black italic text-blue-600">AISIGNALFX</div>
+            <button onclick="toggleMenu()" class="p-2 bg-gray-100 rounded-lg text-blue-600"><i class="fas fa-bars"></i></button>
+            <div class="font-black italic text-blue-600 text-sm">AISIGNALFX</div>
             <div class="w-8"></div>
         </header>
 
-        <div class="p-4 md:p-8">
+        <div class="p-4 md:p-8 flex-1">
             <div id="page-dash" class="page active">
-                <div class="bg-white p-2 rounded-3xl border shadow-sm mb-6 overflow-hidden">
-                    <div id="tv-chart" class="h-[400px] md:h-[550px]"></div>
+                <div class="bg-white p-1 md:p-2 rounded-3xl border shadow-sm mb-6 overflow-hidden h-[400px] md:h-[550px]">
+                    <div id="tv-chart-container" class="w-full h-full"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-10">
                     <div class="bg-white p-6 rounded-3xl border-b-4 border-blue-500 shadow-sm text-center">
-                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1">SMC Signal</p>
-                        <h2 id="web-signal" class="text-2xl font-black text-blue-600">WAITING</h2>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">SMC Signal</p>
+                        <h2 id="web-signal" class="text-2xl font-black text-blue-600 italic">WAITING</h2>
                     </div>
                     <div class="bg-white p-6 rounded-3xl border-b-4 border-green-500 shadow-sm text-center">
-                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1">Entry At</p>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Entry At</p>
                         <h2 id="web-price" class="text-2xl font-black text-gray-800">$0.00</h2>
                     </div>
                     <div class="bg-white p-6 rounded-3xl border-b-4 border-orange-500 shadow-sm text-center">
-                        <p class="text-[9px] font-black text-gray-400 uppercase mb-1">Structure</p>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Structure</p>
                         <h2 id="web-zone" class="text-2xl font-black text-gray-800 italic uppercase">SYNCING</h2>
                     </div>
                 </div>
             </div>
 
             <div id="page-hist" class="page">
-                <h2 class="text-xl font-black italic mb-6">SIGNAL HISTORY</h2>
+                <h2 class="text-xl font-black italic mb-6 uppercase tracking-tight">Trade History</h2>
                 <div id="history-list" class="space-y-3 max-w-2xl">
-                    <p class="text-center py-10 text-gray-400 text-xs italic">Loading history dari server...</p>
+                    <p class="text-center py-10 text-gray-400 text-xs italic">Menghubungkan ke Database...</p>
                 </div>
             </div>
 
-            <div id="page-vip" class="page text-center py-20">
+            <div id="page-vip" class="page text-center py-16">
                 <i class="fas fa-crown text-6xl text-yellow-500 mb-6 drop-shadow-lg"></i>
                 <h2 class="text-3xl font-black italic mb-2 uppercase">VIP Access</h2>
-                <p class="text-gray-400 text-sm mb-8 px-4 uppercase font-bold tracking-tighter">Sinyal Akurasi 95% - No Repaint - SMC Concept</p>
+                <p class="text-gray-400 text-[10px] font-bold uppercase mb-8 tracking-widest">No Repaint SMC Institutional Signals</p>
                 <div class="max-w-sm mx-auto bg-blue-600 p-8 rounded-[40px] text-white shadow-2xl">
                     <p class="text-3xl font-black mb-2">Rp 150.000 <span class="text-xs font-normal">/bulan</span></p>
-                    <button class="w-full mt-4 bg-white text-blue-600 font-black py-4 rounded-2xl shadow-lg uppercase text-[10px]">Hubungi Admin Via WhatsApp</button>
+                    <button class="w-full mt-4 bg-white text-blue-600 font-black py-4 rounded-2xl shadow-lg uppercase text-[10px]">Hubungi Admin</button>
                 </div>
             </div>
         </div>
@@ -104,7 +104,9 @@
     <script>
         const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
 
         function switchPage(pId, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -115,14 +117,29 @@
             if(window.innerWidth < 768) toggleMenu();
         }
 
-        // Widget TradingView
-        new TradingView.widget({
-            "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15",
-            "timezone": "Etc/UTC", "theme": "light", "style": "1",
-            "locale": "en", "toolbar_bg": "#f1f3f6", "container_id": "tv-chart"
-        });
+        // PERBAIKAN: TradingView Load Logic
+        function initTradingView() {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": "OANDA:XAUUSD",
+                "interval": "15",
+                "timezone": "Etc/UTC",
+                "theme": "light",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tv-chart-container"
+            });
+        }
 
-        // Sync Dashboard
+        // Panggil setelah DOM Load
+        window.addEventListener('DOMContentLoaded', initTradingView);
+
+        // SYNC DASHBOARD DATA
         async function fetchData() {
             try {
                 const res = await fetch(fbURL + "signal.json");
@@ -134,15 +151,16 @@
                     const sigEl = document.getElementById('web-signal');
                     if(d.signal.includes("BUY")) sigEl.className = "text-2xl font-black text-green-600 animate-pulse";
                     else if(d.signal.includes("SELL")) sigEl.className = "text-2xl font-black text-red-600 animate-pulse";
+                    else sigEl.className = "text-2xl font-black text-blue-600 italic";
                 }
             } catch(e) {}
         }
         setInterval(fetchData, 3000);
 
-        // Load History
+        // LOAD HISTORY DATA
         async function loadHistory() {
             const list = document.getElementById('history-list');
-            list.innerHTML = '<p class="text-center text-blue-500 animate-pulse text-[10px]">FETCHING DATA...</p>';
+            list.innerHTML = '<p class="text-center text-blue-500 animate-pulse text-[10px]">UPDATING DATA...</p>';
             try {
                 const res = await fetch(fbURL + "history.json");
                 const data = await res.json();
@@ -153,10 +171,10 @@
                         list.innerHTML += `
                             <div class="bg-white p-4 rounded-2xl border flex justify-between items-center shadow-sm">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-1 h-8 rounded-full ${item.signal.includes("BUY") ? 'bg-green-500' : 'bg-red-500'}"></div>
+                                    <div class="w-1 h-8 rounded-full ${item.signal.includes('BUY') ? 'bg-green-500' : 'bg-red-500'}"></div>
                                     <div>
                                         <p class="font-black ${color} text-[11px] uppercase">${item.signal}</p>
-                                        <p class="text-[8px] text-gray-400 font-bold uppercase">${item.time || 'NOW'}</p>
+                                        <p class="text-[8px] text-gray-400 font-bold">${item.time || 'NOW'}</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -165,8 +183,12 @@
                             </div>
                         `;
                     });
-                } else { list.innerHTML = '<p class="text-center py-10 text-gray-400 text-[10px]">BELUM ADA HISTORY.</p>'; }
-            } catch(e) { list.innerHTML = '<p class="text-center py-10 text-red-400 text-[10px]">ERROR CONNECTING.</p>'; }
+                } else {
+                    list.innerHTML = '<p class="text-center py-10 text-gray-400 text-[10px]">BELUM ADA RIWAYAT.</p>';
+                }
+            } catch(e) {
+                list.innerHTML = '<p class="text-center py-10 text-red-400 text-[10px]">SERVER ERROR.</p>';
+            }
         }
     </script>
 </body>
