@@ -150,13 +150,28 @@
             
             setTimeout(() => {
                 new TradingView.widget({
-                    "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15",
-                    "timezone": "Asia/Jakarta", "theme": "light", "style": "1",
-                    "container_id": "tv_chart_container",
-                    "hide_top_toolbar": false, // Agar menu TradingView muncul
-                    "allow_symbol_change": true,
-                    "save_image": false
-                });
+    "autosize": true,
+    "symbol": "OANDA:XAUUSD",
+    "interval": "15",
+    "timezone": "Asia/Jakarta",
+    "theme": "light",
+    "style": "1",
+    "locale": "id",
+    "container_id": "tv_chart_container",
+    /* --- PENGATURAN MENU LENGKAP --- */
+    "hide_top_toolbar": false,     // Munculkan menu Timeframe & Indikator
+    "hide_side_toolbar": false,    // Munculkan alat gambar di samping
+    "allow_symbol_change": true,   // Bisa ganti pair mata uang
+    "enable_publishing": false,
+    "withdateranges": true,        // Munculkan range waktu di bawah
+    "save_image": false,
+    "details": true,               // Detail harga di kanan
+    "hotlist": true,               // Daftar harga populer
+    "calendar": true,              // Kalender ekonomi
+    "show_popup_button": true,     // Tombol buka di tab baru
+    "popup_width": "1000",
+    "popup_height": "650"
+});
                 setInterval(fetchData, 5000);
             }, 300);
         }
