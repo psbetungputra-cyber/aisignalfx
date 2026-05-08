@@ -1,0 +1,40 @@
+/* Gaya Khusus AI Autoscan v10.5 */
+.terminal-container {
+    background: #000;
+    border: 1px solid #f0b90b;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.log-screen {
+    font-family: 'Courier New', monospace;
+    color: #00ff00; /* Warna Hijau Terminal */
+    height: 250px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.progress-bar {
+    background: #2b3139;
+    height: 12px;
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
+#progress-fill {
+    background: #f0b90b; /* Warna Gold VIP */
+    width: 1%; /* Ini nanti digerakkan oleh Python/Firebase */
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.3s;
+}
+
+.risk-control input {
+    background: #1e2329;
+    border: 1px solid #474d57;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+}
