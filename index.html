@@ -17,11 +17,17 @@
         .nav-active { background: var(--accent-blue) !important; color: white !important; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
         .page { display: none; width: 100%; animation: slideUp 0.4s ease-out; }
         .page.active { display: block; }
+        .floating-btn { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
+        .btn-contact { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; transition: 0.3s; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 1024px) { #sidebar { position: fixed; left: -100%; height: 100vh; width: 280px; } #sidebar.open { left: 0; } }
     </style>
 </head>
 <body class="flex min-h-screen">
+    <div class="floating-btn">
+        <a href="https://t.me/AIsignalfx" target="_blank" class="btn-contact bg-[#0088cc] shadow-lg"><i class="fab fa-telegram-plane"></i></a>
+        <a href="https://wa.me/6282258464062" target="_blank" class="btn-contact bg-[#25d366] shadow-lg"><i class="fab fa-whatsapp"></i></a>
+    </div>
 
     <aside id="sidebar" class="w-64 flex flex-col shrink-0">
         <div class="p-6 flex items-center justify-between">
@@ -31,41 +37,56 @@
             </div>
             <button onclick="toggleMenu()" class="lg:hidden text-gray-400"><i class="fas fa-times"></i></button>
         </div>
-        <nav class="flex-1 mt-4">
+        <nav class="flex-1 mt-2">
             <div onclick="switchPage('page-dash', this)" class="nav-item nav-active"><i class="fas fa-chart-pie"></i><span>Dashboard</span></div>
             <div onclick="switchPage('page-autoscan', this)" class="nav-item"><i class="fas fa-robot text-yellow-500"></i><span>AI Autoscan VIP</span></div>
             <div onclick="switchPage('page-visual', this)" class="nav-item"><i class="fas fa-camera text-cyan-400"></i><span>Visual AI Analyst</span></div>
-            <div onclick="switchPage('page-community', this)" class="nav-item"><i class="fas fa-users"></i><span>Community Mapping</span></div>
             <div onclick="switchPage('page-history', this)" class="nav-item"><i class="fas fa-clock-rotate-left"></i><span>History</span></div>
             <div class="border-t border-gray-800 my-4 mx-4"></div>
-            <div onclick="switchPage('page-vip', this)" class="nav-item text-orange-500"><i class="fas fa-crown"></i><span>Upgrade VIP</span></div>
+            <p class="text-[9px] font-bold text-gray-600 ml-8 mb-2 uppercase tracking-widest">Support</p>
+            <a href="https://wa.me/6282258464062" target="_blank" class="nav-item"><i class="fab fa-whatsapp text-green-500"></i><span>Admin WA</span></a>
+            <div onclick="switchPage('page-vip', this)" class="nav-item text-orange-500 mt-2"><i class="fas fa-crown"></i><span>Upgrade VIP</span></div>
         </nav>
+        <div class="p-4 m-4 bg-[#1e2329] rounded-2xl border border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white"><i class="fas fa-user-check"></i></div>
+                <div><p class="text-xs font-black uppercase text-white">Admin Pro</p><p class="text-[9px] text-green-500 font-bold uppercase animate-pulse">● Online</p></div>
+            </div>
+        </div>
     </aside>
-
     <main class="flex-1 flex flex-col min-w-0">
         <header class="lg:hidden p-4 bg-[#161a1e] border-b border-[#2b3139] flex justify-between items-center sticky top-0 z-50">
             <button onclick="toggleMenu()" class="p-2 text-blue-500"><i class="fas fa-bars-staggered"></i></button>
-            <span class="font-black italic text-blue-500 text-sm">AISIGNALFX</span>
-            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-[10px]">GU</div>
+            <span class="font-black italic text-blue-500">AISIGNALFX</span>
+            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-[10px]">PRO</div>
         </header>
 
         <div class="p-4 lg:p-8 space-y-6">
-            
             <div id="page-dash" class="page active">
-                <div class="bg-[#1e2329] rounded-3xl border border-[#2b3139] overflow-hidden h-[70vh] lg:h-[650px] mb-6 shadow-2xl">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-[#1e2329] p-4 rounded-2xl border border-[#2b3139]">
+                        <div class="flex justify-between mb-1"><span class="text-[9px] font-bold text-gray-400 uppercase">Bullish</span><span class="text-[9px] text-green-500 font-bold">82%</span></div>
+                        <div class="w-full bg-gray-800 rounded-full h-1"><div class="bg-green-500 h-1 rounded-full shadow-[0_0_8px_#22c55e]" style="width: 82%"></div></div>
+                    </div>
+                    <div class="bg-[#1e2329] p-4 rounded-2xl border border-[#2b3139]">
+                        <div class="flex justify-between mb-1"><span class="text-[9px] font-bold text-gray-400 uppercase">Bearish</span><span class="text-[9px] text-red-500 font-bold">18%</span></div>
+                        <div class="w-full bg-gray-800 rounded-full h-1"><div class="bg-red-500 h-1 rounded-full shadow-[0_0_8px_#ef4444]" style="width: 18%"></div></div>
+                    </div>
+                </div>
+                <div class="bg-[#1e2329] rounded-3xl border border-[#2b3139] overflow-hidden h-[70vh] lg:h-[600px] mb-6 shadow-2xl relative">
                     <div id="tv-chart-box" class="w-full h-full"></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-[#1e2329] p-6 rounded-2xl border border-[#2b3139] flex justify-between shadow-lg">
-                        <div><p class="text-[10px] text-gray-500 font-bold uppercase">SMC Signal</p><h3 id="web-signal" class="text-2xl font-black text-blue-500 italic">WAITING</h3></div>
+                    <div class="bg-[#1e2329] p-6 rounded-2xl border border-[#2b3139] flex justify-between items-center shadow-lg">
+                        <div><p class="text-[10px] text-gray-500 font-bold">SMC SIGNAL</p><h3 id="web-signal" class="text-2xl font-black text-blue-500 italic uppercase">WAITING</h3></div>
                         <i class="fas fa-satellite-dish text-blue-900 text-2xl"></i>
                     </div>
-                    <div class="bg-[#1e2329] p-6 rounded-2xl border border-[#2b3139] flex justify-between shadow-lg">
-                        <div><p class="text-[10px] text-gray-500 font-bold uppercase">Entry At</p><h3 id="web-price" class="text-2xl font-black text-white">$0.00</h3></div>
+                    <div class="bg-[#1e2329] p-6 rounded-2xl border border-[#2b3139] flex justify-between items-center shadow-lg">
+                        <div><p class="text-[10px] text-gray-500 font-bold">ENTRY AT</p><h3 id="web-price" class="text-2xl font-black text-white">$0.00</h3></div>
                         <i class="fas fa-tag text-gray-700 text-2xl"></i>
                     </div>
-                    <div class="bg-[#1e2329] p-6 rounded-2xl border border-[#2b3139] flex justify-between shadow-lg">
-                        <div><p class="text-[10px] text-gray-500 font-bold uppercase">Structure</p><h3 id="web-zone" class="text-2xl font-black text-cyan-400 italic">SYNCING</h3></div>
+                    <div class="bg-[#1e2329] p-6 rounded-2xl border border-[#2b3139] flex justify-between items-center shadow-lg">
+                        <div><p class="text-[10px] text-gray-500 font-bold">STRUCTURE</p><h3 id="web-zone" class="text-2xl font-black text-cyan-400 italic">SYNCING</h3></div>
                         <i class="fas fa-layer-group text-cyan-900 text-2xl"></i>
                     </div>
                 </div>
@@ -74,72 +95,34 @@
             <div id="page-autoscan" class="page">
                 <div class="bg-[#1e2329] p-8 rounded-[40px] border border-[#2b3139] shadow-2xl">
                     <h2 class="text-2xl font-black italic uppercase text-white mb-6">AI Command Center</h2>
-                    <div class="bg-black rounded-3xl p-6 h-[350px] overflow-y-auto font-mono text-xs text-green-500 border border-gray-800" id="scan-log">
+                    <div class="bg-black rounded-3xl p-6 h-[400px] overflow-y-auto font-mono text-[11px] text-green-500 border border-gray-800" id="scan-log">
                         <p>> [SYSTEM] Booting AISIGNALFX Scan Engine...</p>
-                        <p>> [AI] Analyzing Market Structure XAUUSD (M15)...</p>
+                        <p>> [AI] Analysing Order Block Liquidity...</p>
                     </div>
                 </div>
             </div>
 
             <div id="page-visual" class="page">
-                <div class="bg-[#1e2329] p-10 rounded-[40px] border border-[#2b3139] text-center">
+                <div class="bg-[#1e2329] p-10 rounded-[40px] border border-[#2b3139] text-center shadow-2xl">
                     <i class="fas fa-eye text-4xl text-cyan-400 mb-4"></i>
                     <h2 class="text-2xl font-black uppercase text-white">Visual AI Analyst</h2>
-                    <div class="border-2 border-dashed border-gray-700 rounded-3xl p-12 my-8 bg-black/20 hover:border-cyan-500 transition-all cursor-pointer">
-                        <input type="file" id="ai-upload" class="hidden">
-                        <label for="ai-upload" class="cursor-pointer">
-                            <i class="fas fa-image text-4xl text-gray-600 mb-2"></i>
-                            <p class="text-sm font-bold text-gray-400 italic uppercase">Upload Screenshot Chart</p>
-                        </label>
+                    <div class="border-2 border-dashed border-gray-700 rounded-3xl p-12 my-8 bg-black/20 hover:border-cyan-500 cursor-pointer">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-600 mb-2"></i>
+                        <p class="text-xs font-bold text-gray-400">UPLOAD MAPPING CHART</p>
                     </div>
-                    <button onclick="alert('AI Analysing...')" class="w-full bg-cyan-600 py-4 rounded-xl font-black uppercase text-xs">Analyze Now</button>
+                    <button onclick="alert('AI Scanning...')" class="w-full bg-cyan-600 py-4 rounded-xl font-black uppercase text-xs">Analyze Now</button>
                 </div>
             </div>
-
-            <div id="page-community" class="page text-center py-20">
-                <i class="fas fa-users text-6xl text-gray-700 mb-4"></i>
-                <h2 class="text-2xl font-black italic text-gray-500">COMMUNITY COMING SOON</h2>
             </div>
-
-            <div id="page-history" class="page">
-                <div class="bg-[#1e2329] rounded-[35px] border border-[#2b3139] overflow-hidden">
-                    <div class="p-6 border-b border-[#2b3139] font-black italic uppercase">Signal History</div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs text-white">
-                            <thead class="bg-black/20 text-gray-500 font-black uppercase">
-                                <tr><th class="p-5">Pair</th><th class="p-5">Type</th><th class="p-5">Result</th></tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-800">
-                                <tr><td class="p-5 font-bold">XAUUSD</td><td class="p-5 text-blue-500 font-bold uppercase italic">Buy Limit</td><td class="p-5"><span class="bg-green-500 px-2 py-0.5 rounded text-[8px] font-black uppercase">HIT TP</span></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-vip" class="page">
-                <div class="bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[40px] p-12 text-center shadow-2xl">
-                    <i class="fas fa-crown text-6xl text-white mb-6"></i>
-                    <h2 class="text-4xl font-black uppercase text-white mb-8 italic">VIP LIFETIME</h2>
-                    <a href="https://wa.me/628123456789" class="bg-white text-orange-600 px-10 py-4 rounded-2xl font-black uppercase text-xs inline-block">Order Via WhatsApp</a>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <script>
+    </main>    <script>
         const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        // PERBAIKAN: Fungsi ganti halaman beneran jalan
         function switchPage(pId, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const targetPage = document.getElementById(pId);
-            if(targetPage) {
-                targetPage.classList.add('active');
-            }
+            const target = document.getElementById(pId);
+            if(target) target.classList.add('active');
             
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
             if(el) el.classList.add('nav-active');
@@ -171,3 +154,4 @@
     </script>
 </body>
 </html>
+
