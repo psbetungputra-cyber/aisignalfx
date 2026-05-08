@@ -1,62 +1,51 @@
-/* Style Dasar AI SIGNALFX v10.5 PRO */
-body {
-    background-color: #0b0e11; /* Hitam khas Dashboard Trading */
-    color: #eaecef;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SIGNALFX - Autoscan VIP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">AISIGNALFX</div>
+            <nav>
+                <a href="index.html">Dashboard</a>
+                <a href="autoscan.html" class="active">AI Autoscan (VIP)</a>
+                <a href="visual-ai.html">Visual AI</a>
+                <a href="community.html">Community</a>
+            </nav>
+        </aside>
 
-.dashboard-container {
-    display: flex;
-    height: 100vh;
-}
+        <main class="main-content">
+            <header>
+                <h2>AI AUTOSCAN COMMAND CENTER</h2>
+                <div class="user-info">Logged-In: <span class="user-badge">GU</span></div>
+            </header>
 
-/* Sidebar Kiri */
-.sidebar {
-    width: 250px;
-    background-color: #161a1e;
-    border-right: 1px solid #2b3139;
-    padding: 20px;
-}
+            <div class="status-panel">
+                <p id="status-text">STATUS ANALYSIS: SYNCHRONIZING (1/100)...</p>
+                <div class="progress-bar">
+                    <div id="progress-fill"></div>
+                </div>
+            </div>
 
-.sidebar nav a {
-    display: block;
-    color: #929aa5;
-    padding: 15px;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 5px;
-}
+            <div class="terminal-container">
+                <h3>ANALYSIS LOGS</h3>
+                <div id="analysis-log" class="log-screen">
+                    [12:05] Initializing CCXT connection...<br>
+                    [12:06] Fetching XAUUSD real-time data...<br>
+                    [12:07] Waiting for market shift...
+                </div>
+            </div>
 
-.sidebar nav a.active {
-    background-color: #2b3139;
-    color: #f0b90b; /* Warna Gold VIP */
-}
-
-/* Kotak Terminal Log (Pikiran AI) */
-.terminal-log {
-    background-color: #000;
-    border: 1px solid #f0b90b;
-    padding: 15px;
-    border-radius: 5px;
-    height: 300px;
-    overflow-y: scroll;
-    font-family: 'Courier New', monospace;
-    color: #00ff00; /* Hijau Matrix */
-    margin-top: 20px;
-}
-
-/* Progress Bar */
-.progress-bar-container {
-    background-color: #2b3139;
-    height: 10px;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-top: 10px;
-}
-
-#progress-fill {
-    background-color: #f0b90b;
-    height: 100%;
-    transition: width 0.5s ease;
-}
+            <div class="risk-control">
+                <h3>RISK CALCULATOR</h3>
+                <input type="number" id="equity" placeholder="Enter Equity ($)">
+                <button onclick="calculateRisk()">Calculate Lot</button>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
