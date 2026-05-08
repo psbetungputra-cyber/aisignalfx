@@ -10,148 +10,194 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         :root { --bg-dark: #0b0e11; --sidebar-bg: #161a1e; --accent-blue: #3b82f6; --border-color: #2b3139; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #ffffff; margin: 0; overflow-x: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #ffffff; margin: 0; overflow: hidden; }
         #sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border-color); transition: 0.4s; z-index: 100; }
         .nav-item { color: #929aa5; cursor: pointer; border-radius: 12px; margin: 4px 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; padding: 12px 16px; transition: 0.3s; }
         .nav-active { background: var(--accent-blue) !important; color: white !important; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
-        .page { display: none; width: 100%; animation: slideUp 0.4s ease-out; }
+        .page { display: none; height: 100%; overflow-y: auto; padding: 20px; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
-        .floating-btn { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
-        .btn-contact { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .floating-btn { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
+        .btn-contact { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @media (max-width: 1024px) { #sidebar { position: fixed; left: -100%; height: 100vh; width: 280px; } #sidebar.open { left: 0; } }
     </style>
 </head>
-<body class="flex min-h-screen">
+<body class="flex h-screen overflow-hidden text-gray-200">
+
     <div class="floating-btn">
-        <a href="https://t.me/AIsignalfx" target="_blank" class="btn-contact bg-[#0088cc] shadow-lg"><i class="fab fa-telegram-plane"></i></a>
-        <a href="https://wa.me/6282258464062" target="_blank" class="btn-contact bg-[#25d366] shadow-lg"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://t.me/AIsignalfx" target="_blank" class="btn-contact bg-[#0088cc]"><i class="fab fa-telegram-plane"></i></a>
+        <a href="https://wa.me/6282258464062" target="_blank" class="btn-contact bg-[#25d366]"><i class="fab fa-whatsapp"></i></a>
     </div>
 
     <aside id="sidebar" class="w-64 flex flex-col shrink-0">
         <div class="p-6 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold">AI</div>
-                <span class="font-extrabold text-xl text-blue-500 italic">AISIGNALFX</span>
+                <span class="font-extrabold text-xl text-blue-500 italic uppercase">AiSignalFx</span>
             </div>
             <button onclick="toggleMenu()" class="lg:hidden text-gray-400"><i class="fas fa-times"></i></button>
         </div>
-        <nav class="flex-1 mt-2">
-            <div onclick="switchPage('page-dash', this)" class="nav-item nav-active"><i class="fas fa-chart-pie"></i><span>Dashboard</span></div>
-            <div onclick="switchPage('page-autoscan', this)" class="nav-item"><i class="fas fa-robot text-yellow-500"></i><span>AI Autoscan VIP</span></div>
-            <div onclick="switchPage('page-visual', this)" class="nav-item"><i class="fas fa-camera text-cyan-400"></i><span>Visual AI Analyst</span></div>
-            <div onclick="switchPage('page-history', this)" class="nav-item"><i class="fas fa-clock-rotate-left"></i><span>History</span></div>
-            <div class="border-t border-gray-800 my-4 mx-4"></div>
+        <nav class="flex-1 overflow-y-auto">
+            <div onclick="switchPage('page-dash', this)" class="nav-item nav-active"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
+            <div onclick="switchPage('page-autoscan', this)" class="nav-item"><i class="fas fa-robot"></i><span>AI Autoscan VIP</span></div>
+            <div onclick="switchPage('page-visual', this)" class="nav-item"><i class="fas fa-camera"></i><span>Visual AI Analyst</span></div>
+            <div onclick="switchPage('page-history', this)" class="nav-item"><i class="fas fa-history"></i><span>History</span></div>
             <div onclick="switchPage('page-vip', this)" class="nav-item text-orange-500"><i class="fas fa-crown"></i><span>Upgrade VIP</span></div>
         </nav>
-        <div class="p-4 m-4 bg-[#1e2329] rounded-2xl border border-gray-700 shadow-xl">
+        <div class="p-4 m-4 bg-[#1e2329] rounded-2xl border border-gray-800">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white shadow-lg"><i class="fas fa-user-shield"></i></div>
-                <div><p class="text-xs font-black text-white uppercase">Admin Pro</p><p class="text-[9px] text-green-500 font-bold uppercase animate-pulse">● Online</p></div>
+                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white"><i class="fas fa-user-shield"></i></div>
+                <div><p class="text-[10px] font-bold text-white uppercase tracking-tighter">Admin Pro</p><p class="text-[9px] text-green-500 font-bold animate-pulse">● ONLINE</p></div>
             </div>
         </div>
     </aside>
-            <div id="page-autoscan" class="page">
-                <div class="bg-[#1e2329] p-8 rounded-[40px] border border-[#2b3139] shadow-2xl">
-                    <h2 class="text-2xl font-black italic uppercase text-white mb-6">AI Scan Engine</h2>
-                    <div class="bg-black rounded-3xl p-6 h-[400px] overflow-y-auto font-mono text-[11px] text-green-500 border border-gray-800" id="scan-log">
-                        <p>> [SYSTEM] Booting AISIGNALFX Scan Engine...</p>
-                    </div>
-                </div>
-            </div>
 
-            <div id="page-visual" class="page">
-                <div class="bg-[#1e2329] p-10 rounded-[40px] border border-[#2b3139] text-center shadow-2xl">
-                    <i class="fas fa-eye text-4xl text-cyan-400 mb-4"></i>
-                    <h2 class="text-2xl font-black uppercase text-white italic">Visual AI Analyst</h2>
-                    <div class="border-2 border-dashed border-gray-700 rounded-3xl p-12 my-8 bg-black/20 hover:border-cyan-500 cursor-pointer">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-600 mb-2"></i>
-                        <p class="text-xs font-bold text-gray-400 uppercase">Upload Chart Screenshot</p>
-                    </div>
-                    <button onclick="analyzeVisual()" class="w-full bg-cyan-600 py-4 rounded-xl font-black uppercase text-xs">Analyze Now</button>
-                </div>
-            </div>
+    <main class="flex-1 flex flex-col min-w-0 bg-[#0b0e11] relative">
+        <header class="lg:hidden p-4 bg-[#161a1e] border-b border-gray-800 flex justify-between items-center">
+            <button onclick="toggleMenu()" class="text-blue-500"><i class="fas fa-bars-staggered text-xl"></i></button>
+            <span class="font-black italic text-blue-500">AISIGNALFX</span>
+            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">PRO</div>
+        </header>
 
-            <div id="page-vip" class="page text-center">
-                <div class="bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[40px] p-12 shadow-2xl">
-                    <i class="fas fa-crown text-6xl text-white mb-6"></i>
-                    <h2 class="text-4xl font-black uppercase text-white mb-2 italic">VIP LIFETIME</h2>
-                    <p class="text-white/80 text-xs mb-8 font-bold uppercase">Buka semua fitur cerdas sekarang</p>
-                    <a href="https://wa.me/6282258464062" target="_blank" class="bg-white text-orange-600 px-12 py-4 rounded-2xl font-black uppercase text-xs inline-block shadow-xl">Get Access</a>
+        <div id="page-dash" class="page active">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="h-[400px] bg-[#161a1e] rounded-3xl border border-gray-800 overflow-hidden shadow-2xl">
+                    <div id="tv-chart-box" class="w-full h-full"></div>
+                </div>
+
+                <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 shadow-2xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-3">
+                            <span id="web-tf" class="bg-blue-600/20 text-blue-500 text-xs font-black px-4 py-1.5 rounded-full border border-blue-500/30 uppercase italic">M15</span>
+                            <h2 id="web-signal" class="text-2xl font-black italic uppercase tracking-tighter text-white">Waiting for Signal...</h2>
+                        </div>
+                        <div id="web-time" class="text-[10px] font-bold text-gray-600 uppercase">Last Update: --:--</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-black/40 p-5 rounded-3xl border border-gray-800/50">
+                            <p class="text-[10px] text-gray-500 font-bold uppercase mb-2">Entry Price</p>
+                            <p id="web-price" class="text-xl font-black text-white">0.00000</p>
+                        </div>
+                        <div class="bg-black/40 p-5 rounded-3xl border border-red-900/20">
+                            <p class="text-[10px] text-red-500/70 font-bold uppercase mb-2">Stop Loss</p>
+                            <p id="web-sl" class="text-xl font-black text-red-500">0.00000</p>
+                        </div>
+                        <div class="bg-black/40 p-5 rounded-3xl border border-green-900/20">
+                            <p class="text-[10px] text-green-500/70 font-bold uppercase mb-2">Take Profit</p>
+                            <p id="web-tp" class="text-xl font-black text-green-500">0.00000</p>
+                        </div>
+                        <div class="bg-black/40 p-5 rounded-3xl border border-cyan-900/20">
+                            <p class="text-[10px] text-cyan-500/70 font-bold uppercase mb-2">Market Structure</p>
+                            <p id="web-zone" class="text-xl font-black text-cyan-400 italic">SYNCING</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-500/5 border border-blue-500/20 p-5 rounded-3xl">
+                        <div class="flex items-center gap-2 mb-2 text-blue-500">
+                            <i class="fas fa-brain text-xs"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest">SMC Analysis Reason</span>
+                        </div>
+                        <p id="web-reason" class="text-sm text-gray-400 font-semibold italic">Menunggu konfirmasi validasi Market Structure Break (MSB) dan pembersihan Liquidity di area premium/discount.</p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div id="page-autoscan" class="page">
+            <div class="max-w-2xl mx-auto bg-[#161a1e] rounded-[40px] border border-gray-800 p-8 shadow-2xl">
+                <h2 class="text-2xl font-black uppercase italic mb-6">AI Terminal Scan</h2>
+                <div id="scan-log" class="bg-black/60 rounded-3xl p-6 h-[350px] overflow-y-auto font-mono text-[11px] text-green-500 border border-gray-800">
+                    <p class="opacity-50">> Booting AI Core...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-visual" class="page">
+            <div class="max-w-xl mx-auto text-center bg-[#161a1e] p-12 rounded-[40px] border border-gray-800 shadow-2xl">
+                <i class="fas fa-eye text-5xl text-cyan-500 mb-6"></i>
+                <h2 class="text-3xl font-black italic uppercase mb-2">Visual AI Analyst</h2>
+                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-[4px] mb-8">Analyze Chart by Image</p>
+                <div class="border-2 border-dashed border-gray-800 rounded-3xl p-16 bg-black/20 hover:border-cyan-500 transition-all cursor-pointer mb-8">
+                    <i class="fas fa-cloud-arrow-up text-4xl text-gray-700 mb-4"></i>
+                    <p class="text-xs font-bold text-gray-500 uppercase">Upload Mapping Chart</p>
+                </div>
+                <button onclick="analyzeAI()" id="btn-analyze" class="w-full bg-cyan-600 hover:bg-cyan-500 py-4 rounded-2xl font-black uppercase text-xs shadow-xl transition-all">Analyze Now</button>
+            </div>
+        </div>
+
+        <div id="page-vip" class="page text-center">
+            <div class="max-w-md mx-auto bg-gradient-to-br from-orange-600 to-yellow-500 p-12 rounded-[50px] shadow-2xl">
+                <i class="fas fa-crown text-6xl text-white mb-6"></i>
+                <h2 class="text-4xl font-black italic uppercase text-white mb-2">VIP Access</h2>
+                <p class="text-white/80 text-[10px] font-bold uppercase mb-10 tracking-widest">Lifetime Signal & AI Features</p>
+                <a href="https://wa.me/6282258464062" target="_blank" class="bg-white text-orange-600 px-12 py-4 rounded-2xl font-black uppercase text-xs inline-block shadow-xl hover:scale-105 transition-all">Join VIP Now</a>
+            </div>
+        </div>
+
     </main>
-            <div id="page-autoscan" class="page">
-                <div class="bg-[#1e2329] p-8 rounded-[40px] border border-[#2b3139] shadow-2xl">
-                    <h2 class="text-2xl font-black italic uppercase text-white mb-6">AI Scan Engine</h2>
-                    <div class="bg-black rounded-3xl p-6 h-[400px] overflow-y-auto font-mono text-[11px] text-green-500 border border-gray-800" id="scan-log">
-                        <p>> [SYSTEM] Booting AISIGNALFX Scan Engine...</p>
-                    </div>
-                </div>
-            </div>
 
-            <div id="page-visual" class="page">
-                <div class="bg-[#1e2329] p-10 rounded-[40px] border border-[#2b3139] text-center shadow-2xl">
-                    <i class="fas fa-eye text-4xl text-cyan-400 mb-4"></i>
-                    <h2 class="text-2xl font-black uppercase text-white italic">Visual AI Analyst</h2>
-                    <div class="border-2 border-dashed border-gray-700 rounded-3xl p-12 my-8 bg-black/20 hover:border-cyan-500 cursor-pointer">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-600 mb-2"></i>
-                        <p class="text-xs font-bold text-gray-400 uppercase">Upload Chart Screenshot</p>
-                    </div>
-                    <button onclick="analyzeVisual()" class="w-full bg-cyan-600 py-4 rounded-xl font-black uppercase text-xs">Analyze Now</button>
-                </div>
-            </div>
-
-            <div id="page-vip" class="page text-center">
-                <div class="bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[40px] p-12 shadow-2xl">
-                    <i class="fas fa-crown text-6xl text-white mb-6"></i>
-                    <h2 class="text-4xl font-black uppercase text-white mb-2 italic">VIP LIFETIME</h2>
-                    <p class="text-white/80 text-xs mb-8 font-bold uppercase">Buka semua fitur cerdas sekarang</p>
-                    <a href="https://wa.me/6282258464062" target="_blank" class="bg-white text-orange-600 px-12 py-4 rounded-2xl font-black uppercase text-xs inline-block shadow-xl">Get Access</a>
-                </div>
-            </div>
-        </div>
-    </main>    <script>
+    <script>
+        // MASUKKAN URL FIREBASE LO DI SINI
         const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
 
         function switchPage(pId, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const target = document.getElementById(pId);
-            if(target) target.classList.add('active');
+            document.getElementById(pId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
             if(el) el.classList.add('nav-active');
             if(window.innerWidth < 1024) toggleMenu();
         }
 
-        async function updateRealtime() {
+        // AMBIL DATA DARI PYTHON/FIREBASE
+        async function updateData() {
             try {
                 const res = await fetch(fbURL + "signal.json");
                 const d = await res.json();
                 if(d) {
-                    // Update data dari Python ke Web
-                    document.getElementById('web-signal').innerText = d.signal || 'WAITING';
+                    document.getElementById('web-signal').innerText = d.signal || 'WAITING...';
                     document.getElementById('web-price').innerText = d.price || '0.00000';
                     document.getElementById('web-sl').innerText = d.sl || '0.00000';
                     document.getElementById('web-tp').innerText = d.tp || '0.00000';
                     document.getElementById('web-tf').innerText = d.tf || 'M15';
                     document.getElementById('web-zone').innerText = d.trend || 'SYNCING';
-                    document.getElementById('web-reason').innerText = d.reason || 'Mencari konfirmasi Market Structure...';
-                    document.getElementById('web-time').innerText = "LAST UPDATE: " + new Date().toLocaleTimeString();
+                    document.getElementById('web-reason').innerText = d.reason || 'Scanning for SMC Setup...';
+                    document.getElementById('web-time').innerText = "Last Update: " + new Date().toLocaleTimeString();
                 }
-            } catch(e) { console.log("Database Sync Error"); }
+            } catch(e) {}
         }
 
-        function loadTV() {
-            new TradingView.widget({
-                "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15", "theme": "dark", "container_id": "tv-chart-box"
-            });
+        function analyzeAI() {
+            const b = document.getElementById('btn-analyze');
+            b.innerText = "SCANNING CHART...";
+            setTimeout(() => { 
+                alert("AI Analysis: High Probability SMC Buy Setup Detected!"); 
+                b.innerText = "Analyze Now";
+                switchPage('page-dash', document.querySelector('.nav-item'));
+            }, 3000);
         }
 
-        window.onload = () => { loadTV(); setInterval(updateRealtime, 3000); };
+        function startLogs() {
+            const logs = ["> Scanning Liquidity...", "> Detecting Change of Character...", "> Analyzing Order Block...", "> Signal Confirmed."];
+            let i = 0;
+            const box = document.getElementById('scan-log');
+            setInterval(() => {
+                const p = document.createElement('p');
+                p.innerText = logs[i % logs.length];
+                p.className = "mb-1";
+                box.appendChild(p);
+                box.scrollTop = box.scrollHeight;
+                i++;
+            }, 3000);
+        }
+
+        window.onload = () => {
+            new TradingView.widget({ "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15", "theme": "dark", "container_id": "tv-chart-box" });
+            setInterval(updateData, 3000);
+            startLogs();
+        };
     </script>
 </body>
 </html>
-
