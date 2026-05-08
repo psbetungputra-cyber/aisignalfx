@@ -212,94 +212,7 @@
                     </div>
                 </div>
             </div>
-            <div id="page-visual" class="page">
-                <div class="bg-[#1e2329] p-8 lg:p-12 rounded-[40px] border border-[#2b3139] shadow-2xl text-center">
-                    <div class="w-20 h-20 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-eye text-3xl text-cyan-400"></i>
-                    </div>
-                    <h2 class="text-3xl font-black italic mb-2 uppercase text-white">Visual AI Analyst</h2>
-                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em] mb-10">Scan Market Structure via Image Recognition</p>
-                    
-                    <div class="border-2 border-dashed border-gray-700 rounded-[30px] p-12 mb-8 bg-black/30 hover:border-cyan-500 transition-all group cursor-pointer">
-                        <input type="file" id="ai-upload" class="hidden" accept="image/*">
-                        <label for="ai-upload" class="cursor-pointer">
-                            <i class="fas fa-cloud-arrow-up text-5xl text-gray-600 group-hover:text-cyan-400 mb-4 transition-colors"></i>
-                            <p class="text-sm font-bold text-gray-400">DROP CHART SCREENSHOT HERE</p>
-                            <p class="text-[10px] text-gray-600 mt-2 italic">Supports PNG, JPG (SMC/SnD Analysis)</p>
-                        </label>
-                    </div>
-                    <button onclick="processAI()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl hover:brightness-110 transition-all">Start AI Deep Scan</button>
-                </div>
-            </div>
 
-            <div id="page-community" class="page">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-2xl font-black italic uppercase text-white">Community Mapping</h2>
-                        <p class="text-[10px] font-bold text-gray-500 uppercase">Top Institutional Analysis by Members</p>
-                    </div>
-                    <button class="bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-[10px] font-black uppercase border border-blue-500/30">Share My Map</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-[#161a1e] rounded-3xl border border-[#2b3139] overflow-hidden shadow-lg group">
-                        <div class="h-48 bg-gray-800 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1611974717482-98252c00ed74?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute top-4 left-4 bg-blue-600 text-[8px] font-black px-2 py-1 rounded">XAUUSD / H4</div>
-                        </div>
-                        <div class="p-5 flex justify-between items-center">
-                            <div>
-                                <p class="text-xs font-bold text-white uppercase">Major Supply Zone Mapping</p>
-                                <p class="text-[9px] text-gray-500 mt-1">By MasterSMC - 2 hours ago</p>
-                            </div>
-                            <button class="text-gray-400 hover:text-red-500"><i class="fas fa-heart"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-history" class="page">
-                <div class="bg-[#1e2329] rounded-[35px] border border-[#2b3139] overflow-hidden">
-                    <div class="p-6 border-b border-[#2b3139] flex justify-between items-center">
-                        <h2 class="font-black italic uppercase">Signal History</h2>
-                        <span class="text-[9px] bg-green-500/10 text-green-500 px-3 py-1 rounded-full font-bold uppercase">Win Rate 88%</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-black/20 text-gray-500 uppercase font-black">
-                                <tr>
-                                    <th class="p-5">Pair</th>
-                                    <th class="p-5">Type</th>
-                                    <th class="p-5">Result</th>
-                                    <th class="p-5">Profit</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-800" id="history-body">
-                                <tr class="hover:bg-white/5 transition-colors">
-                                    <td class="p-5 font-bold">XAUUSD</td>
-                                    <td class="p-5 text-blue-500 font-bold uppercase italic">Buy Limit</td>
-                                    <td class="p-5"><span class="bg-green-500 text-white text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">HIT TP</span></td>
-                                    <td class="p-5 text-green-500 font-black">+45 Pips</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-vip" class="page">
-                <div class="bg-gradient-to-br from-orange-600 to-yellow-500 rounded-[40px] p-10 text-center relative overflow-hidden shadow-2xl">
-                    <div class="relative z-10">
-                        <i class="fas fa-crown text-6xl text-white mb-6 drop-shadow-lg"></i>
-                        <h2 class="text-4xl font-black italic uppercase text-white mb-2 tracking-tighter">VIP LIFETIME</h2>
-                        <p class="text-sm font-bold text-white/80 mb-10">Unlimited AI Signals & Institutional Flow Scanner</p>
-                        <div class="flex flex-col md:flex-row gap-4 justify-center">
-                            <a href="https://wa.me/628123456789" class="bg-white text-orange-600 px-8 py-4 rounded-2xl font-black uppercase text-xs shadow-xl">Beli Lewat WA</a>
-                            <a href="https://t.me/UsernameLo" class="bg-black/20 text-white border border-white/30 px-8 py-4 rounded-2xl font-black uppercase text-xs backdrop-blur-md">Chat Telegram</a>
-                        </div>
-                    </div>
-                    <i class="fas fa-gem absolute -bottom-10 -right-10 text-[200px] text-white/10 rotate-12"></i>
-                </div>
-            </div>
         </div>
     </main>
     <script>
@@ -372,8 +285,6 @@ function processAI() {
         } catch(e) {}
     }
     setInterval(updateRealtime, 3000);
-    </div> </main> <script>
-        // Semua fungsi JavaScript (loadTV, switchPage, fetchData, dll) ada di sini
     </script>
 </body>
 </html>
