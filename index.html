@@ -147,15 +147,42 @@
             if(pId === 'page-hist') loadHistory();
         }
 
-        function loadTV() {
-            if (typeof TradingView !== 'undefined') {
-                new TradingView.widget({
-                    "autosize": true, "symbol": "OANDA:XAUUSD", "interval": "15",
-                    "theme": "dark", "style": "1", "locale": "en", "container_id": "tv-chart-box"
-                });
-            }
+        <div id="tv-chart-box" class="w-full h-full"></div>
+
+<script>
+    function loadTV() {
+        if (typeof TradingView !== 'undefined') {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": "OANDA:XAUUSD", // Pair default
+                "interval": "15",         // Timeframe default
+                "timezone": "Etc/UTC",
+                "theme": "dark",          // Tema gelap biar sangar
+                "style": "1",             // Jenis chart (1 = Candles)
+                "locale": "en",
+                "toolbar_bg": "#161a1e",  // Warna toolbar sesuai sidebar lo
+                "enable_publishing": false,
+                "withdateranges": true,   // Munculkan rentang waktu (1D, 5D, etc)
+                "hide_side_toolbar": false, // TAMPILKAN menu gambar di samping kiri (Penting!)
+                "allow_symbol_change": true, // Biar user bisa ganti pair (BTC, Forex, dll)
+                "details": true,            // Tampilkan detail harga di kanan
+                "hotlist": true,            // Tampilkan daftar pair yang lagi rame
+                "calendar": true,           // Tampilkan berita ekonomi
+                "show_popup_button": true,  // Tombol untuk pop-out chart
+                "popup_width": "1000",
+                "popup_height": "650",
+                "container_id": "tv-chart-box",
+                "studies": [                // SUNTIK INDIKATOR OTOMATIS (Opsional)
+                    "RSI@tv-basicstudies",
+                    "MASimple@tv-basicstudies"
+                ]
+            });
         }
-        window.onload = loadTV;
+    }
+    
+    // Panggil fungsi saat window selesai load
+    window.onload = loadTV;
+</script>
 
         async function fetchData() {
             try {
