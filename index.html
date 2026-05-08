@@ -147,9 +147,7 @@
             if(pId === 'page-hist') loadHistory();
         }
 
-        <div id="tv-chart-box" class="w-full h-full"></div>
-            <script>
-    function loadTV() {
+        function loadTV() {
         if (typeof TradingView !== 'undefined') {
             new TradingView.widget({
                 "autosize": true,
@@ -181,7 +179,6 @@
     
     // Panggil fungsi saat window selesai load
     window.onload = loadTV;
-</script>
 
         async function fetchData() {
             try {
