@@ -9,18 +9,27 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #ffffff; overflow-x: hidden; margin: 0; }
+        
+        /* Dasar Dark Mode */
+        body { font-family: 'Inter', sans-serif; background: #0b0e11 !important; color: #ffffff; overflow-x: hidden; margin: 0; }
+        
+        /* Sidebar Gelap */
+        #sidebar { background: #161a1e !important; border-right: 1px solid #2b3139 !important; transition: all 0.3s ease; z-index: 100; }
+        .nav-item { color: #929aa5 !important; }
+        .nav-active { background: #2b3139 !important; border-right: 4px solid #f0b90b !important; color: #f0b90b !important; font-weight: 900; }
+        
+        /* Kartu Signal Gelap */
         .page { display: none; width: 100%; }
         .page.active { display: block !important; }
-        .nav-active { background: #eff6ff; border-right: 4px solid #2563eb; color: #2563eb !important; font-weight: 900; }
-        #sidebar { transition: all 0.3s ease; z-index: 100; }
+        .bg-white { background: #1e2329 !important; border: 1px solid #2b3139 !important; color: white !important; }
+        
         @media (max-width: 767px) {
-            #sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 280px; background: white; }
-            #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.2); }
+            #sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 280px; background: #161a1e !important; }
+            #sidebar.open { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
         }
     </style>
 </head>
-<body class="flex bg-gray-50">
+<body class="flex">
     <aside id="sidebar" class="w-64 h-screen border-r bg-white flex flex-col shrink-0">
         <div class="p-6 flex items-center justify-between">
             <div class="flex items-center gap-2 text-blue-600 font-black italic text-lg"><i class="fas fa-microchip"></i> AISIGNALFX</div>
