@@ -24,6 +24,21 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #2b3139; border-radius: 10px; }
     </style>
+    <style>
+    /* Paksa navigasi selalu di depan agar bisa disentuh */
+    nav, .nav-container, #menu-button {
+        z-index: 9999 !important;
+        position: relative;
+    }
+    /* Biar chart TradingView pas di layar HP */
+    #tv-chart-box {
+        height: 400px !important; /* Tinggi ideal buat HP */
+        width: 100%;
+    }
+    @media (min-width: 768px) {
+        #tv-chart-box { height: 500px !important; }
+    }
+</style>
 </head>
 <body class="flex h-screen overflow-hidden text-gray-200">
 
@@ -133,142 +148,114 @@
     </main>
 
     <script>
-    // --- KONFIGURASI DATABASE ---
     const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
     let currentPair = ""; 
     let tvWidget = null;
 
-    // --- FUNGSI UPDATE DATA DARI FIREBASE ---
+    // 1. UPDATE DATA & TAMPILAN (LENGKAP)
     async function updateData() {
         try {
             const res = await fetch(fbURL + "signal.json");
             const d = await res.json();
             
             if(d) {
-                const signalElement = document.getElementById('web-signal');
+                const signalText = document.getElementById('web-signal');
                 
-                // 1. Update Nama Pair & Status Sinyal
-                // Format: "XAUUSD" atau "XAUUSD - BUY"
-                signalElement.innerText = d.pair + (d.signal ? " - " + d.signal : "");
+                // Update Nama Pair & Signal
+                signalText.innerText = d.pair + (d.signal && d.signal !== "NEUTRAL" ? " - " + d.signal : "");
                 
-                // 2. Logika Warna & Animasi (BUY = Hijau, SELL = Merah)
+                // LOGIKA WARNA SINYAL
                 if(d.signal === "BUY") {
-                    signalElement.style.color = "#00ff00";
-                    signalElement.classList.add("animate-pulse");
+                    signalText.style.color = "#00ff00"; 
+                    signalText.classList.add("animate-pulse");
                 } else if(d.signal === "SELL") {
-                    signalElement.style.color = "#ff4444";
-                    signalElement.classList.add("animate-pulse");
+                    signalText.style.color = "#ff4444"; 
+                    signalText.classList.add("animate-pulse");
                 } else {
-                    signalElement.style.color = "#ffffff";
-                    signalElement.classList.remove("animate-pulse");
+                    signalText.style.color = "#ffffff";
+                    signalText.classList.remove("animate-pulse");
                 }
 
-                // 3. Update Detail Dashboard
+                // Update Dashboard Elements
                 document.getElementById('web-price').innerText = d.price || '0.00000';
-                document.getElementById('web-zone').innerText = d.trend || 'WAITING...';
+                document.getElementById('web-zone').innerText = d.trend || 'SYNCING';
                 document.getElementById('web-reason').innerText = d.note || 'AI is scanning market structure...';
                 document.getElementById('web-time').innerText = "Last Update: " + (d.time || "--:--");
 
-                // 4. Update Chart TradingView Otomatis jika Pair berubah
+                // UPDATE CHART OTOMATIS (TANPA RELOAD PUTIH)
                 if(d.pair && d.pair !== currentPair) {
                     currentPair = d.pair;
-                    updateChart(d.pair);
+                    let source = (d.pair.includes("XA")) ? "OANDA:" : "FX_IDC:";
+                    
+                    if(tvWidget && typeof tvWidget.chart === 'function') {
+                        tvWidget.chart().setSymbol(source + d.pair);
+                    } else {
+                        initTradingView(source + d.pair);
+                    }
                 }
             }
-        } catch(e) {
-            console.log("Sync Error:", e);
-        }
+        } catch(e) { console.log("Firebase Sync Error", e); }
     }
 
-    // --- FUNGSI TRADINGVIEW ENGINE ---
-    function updateChart(pair) {
-        if (!window.TradingView) return;
-        
-        // Bersihkan box sebelum render chart baru
-        const chartBox = document.getElementById('tv-chart-box');
-        chartBox.innerHTML = "";
-        
-        // Logika Source Otomatis: OANDA untuk Gold/Silver, FX_IDC untuk Forex lainnya
-        let source = pair.includes("XAU") || pair.includes("XAG") ? "OANDA:" : "FX_IDC:";
-        
-        new TradingView.widget({
+    // 2. TRADINGVIEW INITIALIZER
+    function initTradingView(symbolName) {
+        document.getElementById('tv-chart-box').innerHTML = "";
+        tvWidget = new TradingView.widget({
             "autosize": true,
-            "symbol": source + pair,
+            "symbol": symbolName || "OANDA:XAUUSD",
             "interval": "15",
             "theme": "dark",
             "style": "1",
             "locale": "id",
-            "toolbar_bg": "#161a1e",
-            "enable_publishing": false,
+            "container_id": "tv-chart-box",
             "hide_side_toolbar": false,
-            "container_id": "tv-chart-box"
+            "allow_symbol_change": true
         });
     }
 
-    // --- FUNGSI ANALISA (BUTTON) ---
+    // 3. FUNGSI ANALISA BUTTON
     function analyzeAI() {
         const btn = document.getElementById('btn-analyze');
-        if(!btn) return;
-        
         btn.innerText = "SCANNING..."; btn.disabled = true;
         setTimeout(() => { 
-            alert("AI Analysis: High Probability " + currentPair + " Setup Detected!"); 
+            alert("AI Analysis: High Probability Setup detected on " + currentPair); 
             btn.innerText = "Analyze Now"; btn.disabled = false;
         }, 3000);
     }
 
-    // --- FUNGSI LOG SCANNING (FAKE LOGS) ---
+    // 4. LOG SCANNING (FAKE LOGS)
     function startLogs() {
-        const logs = [
-            "> Scanning Liquidity...", 
-            "> Detecting CHoCH...", 
-            "> Analyzing Order Block...", 
-            "> Checking FVG Gap...",
-            "> Setup Confirmed."
-        ];
-        let i = 0; 
-        const box = document.getElementById('scan-log');
+        const logs = ["> Scanning Liquidity...", "> Detecting CHoCH...", "> Analyzing OB...", "> Setup Confirmed."];
+        let i = 0; const box = document.getElementById('scan-log');
         if(!box) return;
-
         setInterval(() => {
-            const p = document.createElement('p'); 
-            p.innerText = logs[i % logs.length]; 
+            const p = document.createElement('p');
+            p.innerText = logs[i % logs.length];
             p.className = "mb-1 text-xs text-blue-400 font-mono";
-            box.appendChild(p); 
-            box.scrollTop = box.scrollHeight; 
+            box.appendChild(p);
+            box.scrollTop = box.scrollHeight;
             i++;
-            // Hapus log lama agar tidak berat
-            if(box.children.length > 6) box.removeChild(box.firstChild);
+            if(box.children.length > 5) box.removeChild(box.firstChild);
         }, 3000);
     }
 
-    // --- FIX NAVIGASI (SOLUSI TITIK 3 TIDAK BISA DISENTUH) ---
-    // Fungsi ini memastikan menu bisa diklik dan layer tidak terhalang
+    // 5. NAVIGASI FIX (SAMA DENGAN ASLI)
     function switchPage(pageId, el) {
-        // Sembunyikan semua halaman
         document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-        // Tampilkan halaman tujuan
         document.getElementById(pageId).classList.remove('hidden');
-        
-        // Update styling menu aktif
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('text-blue-500'));
         if(el) el.classList.add('text-blue-500');
-
-        // Jika pindah ke dashboard, pastikan chart ke-reload
-        if(pageId === 'page-dash' && currentPair) {
-            setTimeout(() => updateChart(currentPair), 100);
-        }
     }
 
-    // --- START SEMUA SISTEM ---
+    // START SEMUA
     window.onload = () => { 
+        initTradingView("OANDA:XAUUSD");
         updateData(); 
-        setInterval(updateData, 5000); // Sinkron tiap 5 detik
+        setInterval(updateData, 5000); 
         startLogs(); 
-        
-        // Pastikan menu titik 3 (navigasi) memiliki z-index tinggi melalui JS jika perlu
-        const navBar = document.querySelector('nav');
-        if(navBar) navBar.style.zIndex = "9999";
+        // Force Z-Index menu navigasi
+        const nav = document.querySelector('nav');
+        if(nav) nav.style.zIndex = "9999";
     };
 </script>
 </body>
