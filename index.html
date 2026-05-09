@@ -1,40 +1,37 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- LOCK DESKTOP MODE: Supaya di HP tetap lebar dan tidak berantakan -->
+    <!-- LOCK DESKTOP MODE: Biar di HP tetap lebar & pro -->
     <meta name="viewport" content="width=1280">
-    <title>AI SIGNALFX - Integrated Terminal</title>
+    <title>AI SIGNALFX - Professional Trading Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --bg-main: #020617;
-            --panel: #0f172a;
+            --bg-dark: #05070a;
+            --panel-dark: #0f172a;
             --wa-bubble: #1e293b;
-            --accent: #3b82f6;
         }
         body {
-            background-color: var(--bg-main);
-            color: #f8fafc;
+            background-color: var(--bg-dark);
+            color: white;
             font-family: 'Inter', sans-serif;
             min-width: 1280px;
             overflow-x: auto;
         }
-        .glass {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        /* Style Chat WhatsApp Bubble */
+        /* Style Chat WhatsApp */
         .chat-bubble {
             max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            line-height: 1.5;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 12px;
             position: relative;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 4px;
         }
         .bubble-left {
             background: var(--wa-bubble);
@@ -46,142 +43,110 @@
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        /* Scrollbar Halus */
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="p-8">
+<body class="p-6">
 
-    <!-- HEADER NAVIGATION -->
-    <header class="flex justify-between items-center mb-8 max-w-[1200px] mx-auto">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black italic">FX</div>
-            <h1 class="text-2xl font-black tracking-tighter text-white uppercase italic">AI SIGNALFX <span class="text-blue-500 text-xs not-italic font-bold ml-1">PRO</span></h1>
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-black italic text-blue-500 tracking-tighter">AI SIGNALFX</h1>
+        <div class="flex gap-4">
+            <button onclick="switchPage('dashboard')" class="text-xs font-bold uppercase hover:text-blue-400">Dashboard</button>
+            <button onclick="switchPage('visual-ai')" class="text-xs font-bold uppercase hover:text-blue-400">Visual AI</button>
+            <button onclick="switchPage('autoscan')" class="text-xs font-bold uppercase hover:text-blue-400 text-amber-500">VIP Autoscan</button>
         </div>
-        <nav class="flex gap-8">
-            <button onclick="navTo('dashboard')" class="text-xs font-bold uppercase tracking-widest hover:text-blue-400 transition">Dashboard</button>
-            <button onclick="navTo('visual')" class="text-xs font-bold uppercase tracking-widest hover:text-blue-400 transition">AI Visual</button>
-            <button onclick="navTo('autoscan')" class="text-xs font-bold uppercase tracking-widest text-amber-500 hover:text-amber-400 transition">VIP Autoscan</button>
-        </nav>
-    </header>
+    </div>
 
-    <!-- MAIN STACK (NEUTRAL LAYOUT) -->
-    <main class="max-w-[1200px] mx-auto space-y-8">
+    <!-- MAIN TERMINAL (NEUTRAL LAYOUT) -->
+    <main class="max-w-[1200px] mx-auto space-y-6">
         
-        <!-- 1. TRADINGVIEW (LEBAR & LEWAT) -->
-        <section class="glass rounded-[2rem] overflow-hidden shadow-2xl border-blue-500/10 h-[650px]">
-            <!-- Placeholder for TradingView Widget -->
-            <div id="tv-container" class="w-full h-full bg-slate-900 flex items-center justify-center">
-                <p class="text-gray-500 italic text-sm">TradingView Widget Active (Full Width)</p>
-            </div>
-        </section>
+        <!-- 1. TRADINGVIEW FULL WIDTH -->
+        <div class="glass-panel rounded-3xl overflow-hidden h-[600px] shadow-2xl border-blue-500/20">
+            <!-- Replace with your actual TradingView Widget Code -->
+            <div id="tradingview_widget" class="w-full h-full"></div>
+        </div>
 
-        <!-- 2. MARKET SENTIMENT & DATA -->
-        <section class="glass p-6 rounded-3xl">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-[10px] font-black uppercase text-blue-400 tracking-[0.2em]">Market Sentiment Analysis</h2>
-                <div class="flex gap-4 text-[10px] font-bold">
-                    <span class="text-green-400">BULLS: 68%</span>
-                    <span class="text-red-400">BEARS: 32%</span>
-                </div>
+        <!-- 2. SENTIMEN PASAR -->
+        <div class="glass-panel p-5 rounded-2xl">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Market Sentiment</span>
+                <span class="text-[10px] font-bold text-white" id="sentiment-label">70% BULLISH</span>
             </div>
-            <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex">
-                <div class="bg-gradient-to-r from-green-600 to-green-400 shadow-[0_0_15px_#22c55e66]" style="width: 68%"></div>
-                <div class="bg-gradient-to-r from-red-600 to-red-400 shadow-[0_0_15px_#ef444466]" style="width: 32%"></div>
+            <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden flex">
+                <div id="bull-bar" class="bg-green-500 shadow-[0_0_10px_#22c55e]" style="width: 70%"></div>
+                <div id="bear-bar" class="bg-red-500 shadow-[0_0_10px_#ef4444]" style="width: 30%"></div>
             </div>
-        </section>
+        </div>
 
-        <!-- 3. DYNAMIC SIGNAL BOX (Hanya muncul jika menu dipilih) -->
-        <section id="signal-area" class="hidden glass p-8 rounded-[2rem] border-blue-500/30 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <!-- Content Injected via JS -->
-        </section>
+        <!-- 3. DYNAMIC CONTENT AREA (Visual AI / Info) -->
+        <div id="dynamic-content" class="hidden glass-panel p-6 rounded-3xl border-amber-500/30">
+            <!-- Sinyal & Konfirmasi muncul di sini sesuai menu yang dipilih -->
+        </div>
 
         <!-- 4. COMMUNITY MAPPING (WhatsApp Style) -->
-        <section class="glass rounded-[2.5rem] p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                    </span>
-                    Community Live Feed
-                </h3>
-                <span class="text-[10px] text-gray-500 font-medium">1.2k Traders Online</span>
-            </div>
+        <div class="glass-panel rounded-3xl p-6">
+            <h3 class="text-xs font-bold uppercase mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span> Community Mapping
+            </h3>
             
-            <!-- CHAT BOX -->
-            <div id="chat-flow" class="flex flex-col space-y-4 h-[450px] overflow-y-auto pr-4 mb-8">
-                <!-- Example Left -->
+            <div id="chat-box" class="flex flex-col space-y-4 h-[400px] overflow-y-auto pr-4">
+                <!-- Chat Bubbles -->
                 <div class="chat-bubble bubble-left">
-                    <div class="text-[10px] font-black text-blue-400 uppercase mb-1">Guest Trader #82</div>
-                    <p class="text-slate-200">Gue baru upload chart Gold, tolong di-scan pake Visual AI dong bro!</p>
-                    <div class="flex justify-end gap-3 mt-2 text-[9px] text-slate-500 font-bold uppercase">
-                        <button class="hover:text-blue-400">Like</button>
-                        <button class="hover:text-blue-400">Reply</button>
-                        <span>02:10 AM</span>
+                    <p class="font-bold text-blue-400 text-[10px] mb-1">GUEST TRADER</p>
+                    <p>Guys, Gold H1 ada potensi BOS ke atas nggak ya?</p>
+                    <div class="flex justify-end mt-1 gap-3 text-[9px] text-gray-500">
+                        <span>Like</span><span>Reply</span><span>02:05 AM</span>
                     </div>
                 </div>
             </div>
 
-            <!-- INPUT BAR -->
-            <div class="flex items-center gap-4 bg-slate-900/50 p-3 rounded-full border border-white/5">
-                <input type="text" placeholder="Share your mapping analysis..." class="flex-1 bg-transparent border-none px-4 text-sm focus:ring-0 text-white outline-none">
-                <div class="flex gap-2">
-                    <button onclick="triggerVisual()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full text-[10px] font-black uppercase transition shadow-lg shadow-blue-500/20">Upload Chart</button>
-                    <button class="bg-white/10 hover:bg-white/20 p-2 px-6 rounded-full text-[10px] font-black uppercase transition">Send</button>
-                </div>
+            <!-- INPUT AREA -->
+            <div class="mt-6 flex gap-3">
+                <input type="text" placeholder="Type analysis..." class="flex-1 bg-slate-800 border-none rounded-full px-5 text-sm focus:ring-2 focus:ring-blue-500">
+                <button class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full text-xs font-bold uppercase transition">Send</button>
+                <button onclick="triggerUpload()" class="bg-green-600 hover:bg-green-500 px-6 py-2 rounded-full text-xs font-bold uppercase transition">Upload Chart</button>
             </div>
-        </section>
+        </div>
 
     </main>
 
-    <footer class="mt-12 text-center pb-8">
-        <p class="text-[10px] text-slate-600 font-medium tracking-widest uppercase">© 2026 AI SIGNALFX Terminal. High Risk High Reward.</p>
-    </footer>
-
     <script>
-        function navTo(menu) {
-            const area = document.getElementById('signal-area');
-            area.classList.remove('hidden');
-            window.scrollTo({ top: area.offsetTop - 50, behavior: 'smooth' });
-
-            if(menu === 'visual') {
-                area.innerHTML = `
-                    <div class="flex justify-between items-center mb-6">
-                        <h4 class="text-sm font-black text-blue-400 uppercase tracking-widest">Visual AI Signal Analysis</h4>
-                        <span class="text-[9px] bg-blue-500/20 px-3 py-1 rounded-full text-blue-300 font-bold">Quota: 2/5 Daily</span>
+        // Logika Switch Menu & Sinyal di Masing-masing tempat
+        function switchPage(page) {
+            const dynamic = document.getElementById('dynamic-content');
+            dynamic.classList.remove('hidden');
+            
+            if(page === 'visual-ai') {
+                dynamic.innerHTML = `
+                    <h2 class="text-amber-500 font-bold mb-2 uppercase text-xs">Visual AI Analysis Result</h2>
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="bg-black/30 p-3 rounded-xl border border-white/5"><p class="text-[10px] text-gray-400">ENTRY</p><p class="font-bold text-green-400">2345.10</p></div>
+                        <div class="bg-black/30 p-3 rounded-xl border border-white/5"><p class="text-[10px] text-gray-400">SL</p><p class="font-bold text-red-400">2340.00</p></div>
+                        <div class="bg-black/30 p-3 rounded-xl border border-white/5"><p class="text-[10px] text-gray-400">TP</p><p class="font-bold text-blue-400">2360.00</p></div>
                     </div>
-                    <div class="grid grid-cols-3 gap-6 mb-6">
-                        <div class="bg-slate-900/50 p-4 rounded-2xl border border-white/5"><span class="text-[9px] text-gray-500 block mb-1">ENTRY</span><span class="text-xl font-bold text-green-400 tracking-tight">2342.15</span></div>
-                        <div class="bg-slate-900/50 p-4 rounded-2xl border border-white/5"><span class="text-[9px] text-gray-500 block mb-1">STOP LOSS</span><span class="text-xl font-bold text-red-400 tracking-tight">2338.00</span></div>
-                        <div class="bg-slate-900/50 p-4 rounded-2xl border border-white/5"><span class="text-[9px] text-gray-500 block mb-1">TAKE PROFIT</span><span class="text-xl font-bold text-blue-400 tracking-tight">2355.50</span></div>
-                    </div>
-                    <div class="p-4 bg-blue-500/5 rounded-2xl border border-blue-500/20">
-                        <p class="text-xs text-slate-300"><strong class="text-blue-400">AI VISUAL CONFIRMATION:</strong> Chart menunjukkan pola <span class="italic">Double Bottom</span> pada Support H1. Volume transaksi meningkat 15% pada kaki kedua, mengkonfirmasi akumulasi buyer.</p>
-                    </div>
+                    <p class="text-[11px] leading-relaxed text-gray-300"><b class="text-white">KONFIRMASI:</b> Visual scan mendeteksi Bullish Engulfing pada area Demand H1 disertai lonjakan volume institusi.</p>
                 `;
-            } else if(menu === 'autoscan') {
-                area.innerHTML = `
-                    <div class="flex justify-between items-center mb-6">
-                        <h4 class="text-sm font-black text-amber-500 uppercase tracking-widest">VIP AI System Bot Live Signal</h4>
-                        <span class="text-[9px] bg-amber-500/20 px-3 py-1 rounded-full text-amber-400 font-bold uppercase">Institutional Scanning</span>
+            } else if(page === 'autoscan') {
+                dynamic.innerHTML = `
+                    <h2 class="text-blue-400 font-bold mb-2 uppercase text-xs">VIP AI System Bot Signal</h2>
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="bg-blue-500/10 p-3 rounded-xl border border-blue-500/30"><p class="text-[10px] text-gray-400">AUTO ENTRY</p><p class="font-bold text-white">2348.50</p></div>
+                        <div class="bg-blue-500/10 p-3 rounded-xl border border-blue-500/30"><p class="text-[10px] text-gray-400">AUTO SL</p><p class="font-bold text-white">2342.00</p></div>
+                        <div class="bg-blue-500/10 p-3 rounded-xl border border-blue-500/30"><p class="text-[10px] text-gray-400">AUTO TP</p><p class="font-bold text-white">2370.00</p></div>
                     </div>
-                    <div class="grid grid-cols-3 gap-6 mb-6">
-                        <div class="bg-amber-500/10 p-4 rounded-2xl border border-amber-500/20"><span class="text-[9px] text-amber-500/50 block mb-1 font-bold">VIP ENTRY</span><span class="text-xl font-bold text-white tracking-tight">2345.80</span></div>
-                        <div class="bg-amber-500/10 p-4 rounded-2xl border border-amber-500/20"><span class="text-[9px] text-amber-500/50 block mb-1 font-bold">VIP STOP LOSS</span><span class="text-xl font-bold text-white tracking-tight">2341.00</span></div>
-                        <div class="bg-amber-500/10 p-4 rounded-2xl border border-amber-500/20"><span class="text-[9px] text-amber-500/50 block mb-1 font-bold">VIP TAKE PROFIT</span><span class="text-xl font-bold text-white tracking-tight">2375.00</span></div>
-                    </div>
-                    <div class="p-4 bg-amber-500/5 rounded-2xl border border-amber-500/20">
-                        <p class="text-xs text-slate-300"><strong class="text-amber-500">SMC BOT LOGIC:</strong> Break of Structure (BOS) terdeteksi pada M15. Harga saat ini berada di <span class="italic">Unmitigated Demand Zone</span>. Rasio Risk/Reward 1:5 terpantau ideal.</p>
-                    </div>
+                    <p class="text-[11px] leading-relaxed text-gray-300"><b class="text-white">ALASAN:</b> Smart Money Concept (SMC) mendeteksi Unmitigated Order Block pada M15 dengan Break of Structure (BOS) yang valid.</p>
                 `;
             } else {
-                area.classList.add('hidden');
+                dynamic.classList.add('hidden');
             }
         }
 
-        function triggerVisual() { navTo('visual'); }
+        function triggerUpload() {
+            alert("Silahkan pilih screenshot chart lo untuk di-scan AI!");
+        }
     </script>
 </body>
 </html>
