@@ -145,6 +145,20 @@
                     </tr>
                 </thead>
                 <tbody id="scanner-body">
+                    <div id="signal-modal" class="hidden fixed inset-0 z-[10005] bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-[#161a1e] w-full max-w-xs rounded-[32px] border border-gray-800 p-6 shadow-2xl">
+        <h3 id="modal-title" class="text-xl font-black italic text-blue-500 uppercase mb-4 text-center">XAUUSD</h3>
+        <p class="text-[10px] text-gray-500 font-bold text-center uppercase mb-6 tracking-widest">Pilih Tipe Analisa AI</p>
+        
+        <div class="space-y-3">
+            <button onclick="selectTradeType('SCALPING')" class="w-full bg-blue-600/10 hover:bg-blue-600 border border-blue-500/30 text-blue-500 hover:text-white py-3 rounded-2xl font-black text-xs transition-all uppercase italic">⚡ Scalping (M1-M5)</button>
+            <button onclick="selectTradeType('INTRADAY')" class="w-full bg-cyan-600/10 hover:bg-cyan-600 border border-cyan-500/30 text-cyan-500 hover:text-white py-3 rounded-2xl font-black text-xs transition-all uppercase italic">🕒 Intraday (M15-H1)</button>
+            <button onclick="selectTradeType('SWING')" class="w-full bg-purple-600/10 hover:bg-purple-600 border border-purple-500/30 text-purple-500 hover:text-white py-3 rounded-2xl font-black text-xs transition-all uppercase italic">🚀 Swing (H4-D1)</button>
+        </div>
+        
+        <button onclick="closeModal()" class="w-full mt-6 text-gray-500 text-[10px] font-bold uppercase tracking-widest">Batal</button>
+    </div>
+</div>
                     </tbody>
             </table>
         </div>
@@ -293,6 +307,46 @@ async function updateScanner() {
             setInterval(updateData, 5000); 
             startLogs(); 
         };
+        // Variabel untuk menyimpan pair apa yang sedang dipilih user
+let selectedPair = "";
+
+// FUNGSI UTAMA UNTUK MEMBUKA POP-UP (MODAL)
+function viewPair(pair) {
+    selectedPair = pair; // Simpan nama pair (misal: XAUUSD)
+    
+    // Ganti tulisan di judul modal jadi nama pairnya
+    const modalTitle = document.getElementById('modal-title');
+    if(modalTitle) modalTitle.innerText = pair;
+    
+    // Munculkan modalnya (hapus class 'hidden')
+    const modal = document.getElementById('signal-modal');
+    if(modal) modal.classList.remove('hidden');
+}
+
+// FUNGSI UNTUK MENUTUP POP-UP
+function closeModal() {
+    const modal = document.getElementById('signal-modal');
+    if(modal) modal.classList.add('hidden');
+}
+
+// FUNGSI SAAT USER PILIH SCALPING / INTRADAY / SWING
+function selectTradeType(type) {
+    // 1. Set pair aktif ke Dashboard
+    currentPair = selectedPair;
+    
+    // 2. Tutup pop-up
+    closeModal();
+    
+    // 3. Pindah halaman ke Dashboard
+    switchPage('page-dash');
+    
+    // 4. Kasih tau Dashboard untuk nampilin tipe apa
+    document.getElementById('web-signal').innerText = selectedPair + " - " + type;
+    
+    // 5. Update data & chart
+    updateData(); 
+    console.log("Menganalisis " + selectedPair + " tipe " + type);
+}
     </script>
 </body>
 </html>
