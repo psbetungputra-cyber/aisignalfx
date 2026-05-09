@@ -24,7 +24,12 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #2b3139; border-radius: 10px; }
     </style>
-    <style>
+    /* Tambahkan ini di dalam tag <style> lo */
+@media (max-width: 1024px) {
+    #sidebar.active {
+        left: 0 !important; /* Munculkan sidebar saat aktif */
+    }
+}
     /* Paksa navigasi selalu di depan agar bisa disentuh */
     nav, .nav-container, #menu-button {
         z-index: 9999 !important;
