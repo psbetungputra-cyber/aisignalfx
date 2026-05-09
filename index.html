@@ -146,21 +146,40 @@
         }
 
         async function updateData() {
-            try {
-                const res = await fetch(fbURL + "signal.json");
-                const d = await res.json();
-                if(d) {
-                    document.getElementById('web-signal').innerText = d.signal || 'WAITING...';
-                    document.getElementById('web-price').innerText = d.price || '0.00000';
-                    document.getElementById('web-sl').innerText = d.sl || '0.00000';
-                    document.getElementById('web-tp').innerText = d.tp || '0.00000';
-                    document.getElementById('web-tf').innerText = d.tf || 'M15';
-                    document.getElementById('web-zone').innerText = d.trend || 'SYNCING';
-                    document.getElementById('web-reason').innerText = d.reason || 'Scanning for SMC Setup...';
-                    document.getElementById('web-time').innerText = "Update: " + new Date().toLocaleTimeString();
-                }
-            } catch(e) {}
+    try {
+        const res = await fetch(fbURL + "signal.json");
+        const d = await res.json();
+        if(d) {
+            const signalText = document.getElementById('web-signal');
+            signalText.innerText = d.signal || 'WAITING...';
+            
+            // LOGIKA WARNA: Biar teks sinyal berubah warna otomatis
+            if(d.signal === "BUY") {
+                signalText.style.color = "#00ff00"; // Hijau Neon
+                signalText.classList.add("animate-pulse");
+            } else if(d.signal === "SELL") {
+                signalText.style.color = "#ff4444"; // Merah Neon
+                signalText.classList.add("animate-pulse");
+            } else {
+                signalText.style.color = "#ffffff";
+                signalText.classList.remove("animate-pulse");
+            }
+
+            document.getElementById('web-price').innerText = d.price || '0.00000';
+            
+            // Ambil Trend/Zone dari data Termux
+            document.getElementById('web-zone').innerText = d.trend || 'SYNCING';
+            
+            // Catatan atau Alasan AI
+            document.getElementById('web-reason').innerText = d.note || 'AI is scanning market structure...';
+            
+            // Update Waktu dari Termux
+            document.getElementById('web-time').innerText = "Update: " + (d.time || "--:--");
         }
+    } catch(e) {
+        console.log("Sync Error:", e);
+    }
+}
 
         function analyzeAI() {
             const b = document.getElementById('btn-analyze');
