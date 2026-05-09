@@ -11,39 +11,42 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         :root { --bg-dark: #0b0e11; --sidebar-bg: #161a1e; --accent-blue: #3b82f6; --border-color: #2b3139; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #ffffff; margin: 0; overflow: hidden; }
-        #sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border-color); transition: 0.4s; z-index: 100; }
+        
+        /* Sidebar Fix */
+        #sidebar { 
+            background: var(--sidebar-bg); 
+            border-right: 1px solid var(--border-color); 
+            transition: 0.4s; 
+            z-index: 10000 !important; 
+        }
+
         .nav-item { color: #929aa5; cursor: pointer; border-radius: 12px; margin: 4px 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; padding: 12px 16px; transition: 0.3s; }
         .nav-active { background: var(--accent-blue) !important; color: white !important; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        
         .page { display: none; height: 100vh; overflow-y: auto; padding-bottom: 100px; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
+        
         .floating-btn { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
         .btn-contact { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @media (max-width: 1024px) { #sidebar { position: fixed; left: -100%; height: 100vh; width: 280px; } #sidebar.open { left: 0; } }
-        /* Custom scrollbar */
+
+        /* Responsive Logic */
+        @media (max-width: 1024px) {
+            #sidebar { position: fixed; left: -100%; height: 100vh; width: 280px; }
+            #sidebar.open { left: 0 !important; }
+            #tv-chart-box { height: 400px !important; width: 100%; }
+        }
+        
+        @media (min-width: 768px) {
+            #tv-chart-box { height: 500px !important; }
+        }
+
+        header, #menu-button { z-index: 9999 !important; position: relative; }
+        
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #2b3139; border-radius: 10px; }
     </style>
-    /* Tambahkan ini di dalam tag <style> lo */
-@media (max-width: 1024px) {
-    #sidebar.active {
-        left: 0 !important; /* Munculkan sidebar saat aktif */
-    }
-}
-    /* Paksa navigasi selalu di depan agar bisa disentuh */
-    nav, .nav-container, #menu-button {
-        z-index: 9999 !important;
-        position: relative;
-    }
-    /* Biar chart TradingView pas di layar HP */
-    #tv-chart-box {
-        height: 400px !important; /* Tinggi ideal buat HP */
-        width: 100%;
-    }
-    @media (min-width: 768px) {
-        #tv-chart-box { height: 500px !important; }
-    }
-</style>
 </head>
 <body class="flex h-screen overflow-hidden text-gray-200">
 
@@ -74,9 +77,10 @@
             </div>
         </div>
     </aside>
+
     <main class="flex-1 flex flex-col min-w-0 bg-[#0b0e11] relative">
         <header class="lg:hidden p-4 bg-[#161a1e] border-b border-gray-800 flex justify-between items-center">
-            <button onclick="toggleMenu()" class="text-blue-500"><i class="fas fa-bars-staggered text-xl"></i></button>
+            <button onclick="toggleMenu()" id="menu-button" class="text-blue-500"><i class="fas fa-bars-staggered text-xl"></i></button>
             <span class="font-black italic text-blue-500">AISIGNALFX</span>
             <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">PRO</div>
         </header>
@@ -91,8 +95,8 @@
                     <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 shadow-2xl">
                         <div class="flex justify-between items-center mb-6">
                             <div class="flex items-center gap-3">
-                                <span id="web-tf" class="bg-blue-600/20 text-blue-500 text-xs font-black px-4 py-1.5 rounded-full border border-blue-500/30 uppercase italic">M15</span>
-                                <h2 id="web-signal" class="text-2xl font-black italic uppercase tracking-tighter text-white">Waiting Signal...</h2>
+                                <span class="bg-blue-600/20 text-blue-500 text-xs font-black px-4 py-1.5 rounded-full border border-blue-500/30 uppercase italic">M15</span>
+                                <h2 id="web-signal" class="text-2xl font-black italic uppercase tracking-tighter text-white">Waiting...</h2>
                             </div>
                             <div id="web-time" class="text-[10px] font-bold text-gray-600 uppercase italic">Update: --:--</div>
                         </div>
@@ -103,32 +107,28 @@
                             <div class="bg-black/40 p-5 rounded-3xl border border-cyan-900/20"><p class="text-[9px] text-cyan-500 font-bold uppercase mb-1">Zone</p><p id="web-zone" class="text-lg font-black text-cyan-400 italic">SYNCING</p></div>
                         </div>
                         <div class="bg-blue-500/5 border border-blue-500/20 p-5 rounded-3xl">
-                            <p id="web-reason" class="text-xs text-gray-400 font-semibold italic">Scanning for Market Structure Break (MSB) confirmation...</p>
+                            <p id="web-reason" class="text-xs text-gray-400 font-semibold italic">Scanning market structure...</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-6">
-                    <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 shadow-2xl h-[400px] flex flex-col">
-                        <div class="flex items-center gap-2 mb-6"><i class="fas fa-users text-cyan-500 text-sm"></i><h3 class="text-sm font-black italic uppercase tracking-widest">Community Mapping</h3></div>
-                        <div class="flex-1 border-2 border-dashed border-gray-800 rounded-3xl flex flex-col items-center justify-center text-center p-6 bg-black/20">
-                            <i class="fas fa-image text-3xl text-gray-700 mb-3"></i>
-                            <p class="text-[10px] font-bold text-gray-500 uppercase leading-relaxed">No community mapping<br>shared yet today</p>
+                    <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 shadow-2xl h-[400px] flex flex-col text-center">
+                        <div class="flex items-center gap-2 mb-6"><i class="fas fa-users text-cyan-500"></i><h3 class="text-sm font-black uppercase italic">Community Mapping</h3></div>
+                        <div class="flex-1 border-2 border-dashed border-gray-800 rounded-3xl flex flex-col items-center justify-center p-6 bg-black/20 text-gray-500">
+                            <i class="fas fa-image text-3xl mb-3"></i><p class="text-[10px] font-bold uppercase">No mapping shared yet</p>
                         </div>
                     </div>
-
                     <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 shadow-2xl h-[335px] flex flex-col">
-                        <div class="flex items-center gap-2 mb-6"><i class="fas fa-history text-purple-500 text-sm"></i><h3 class="text-sm font-black italic uppercase tracking-widest">Recent History</h3></div>
-                        <div id="history-list" class="flex-1 overflow-y-auto space-y-3 pr-2">
-                            <div class="bg-black/30 p-4 rounded-2xl border border-gray-800 text-center"><p class="text-[10px] font-bold text-gray-600 uppercase italic">History data syncing...</p></div>
-                        </div>
+                        <div class="flex items-center gap-2 mb-6"><i class="fas fa-history text-purple-500"></i><h3 class="text-sm font-black uppercase italic">Recent History</h3></div>
+                        <div id="history-list" class="flex-1 overflow-y-auto space-y-3"><p class="text-[10px] text-center text-gray-600 italic">History syncing...</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="page-autoscan" class="page px-4 lg:px-8 py-6">
-            <div class="max-w-3xl mx-auto bg-[#161a1e] rounded-[40px] border border-gray-800 p-8 shadow-2xl">
+            <div class="max-w-3xl mx-auto bg-[#161a1e] rounded-[40px] border border-gray-800 p-8">
                 <h2 class="text-2xl font-black uppercase italic mb-6">AI Terminal Scan</h2>
                 <div id="scan-log" class="bg-black/60 rounded-3xl p-6 h-[400px] overflow-y-auto font-mono text-[10px] text-green-500 border border-gray-800"></div>
             </div>
@@ -138,130 +138,104 @@
             <div class="max-w-xl mx-auto text-center bg-[#161a1e] p-12 rounded-[40px] border border-gray-800 shadow-2xl">
                 <i class="fas fa-eye text-5xl text-cyan-500 mb-6"></i>
                 <h2 class="text-3xl font-black italic uppercase mb-2">Visual AI Analyst</h2>
-                <div class="border-2 border-dashed border-gray-800 rounded-3xl p-16 bg-black/20 mb-8 cursor-pointer"><p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Upload Chart Screenshot</p></div>
-                <button onclick="analyzeAI()" id="btn-analyze" class="w-full bg-cyan-600 py-4 rounded-2xl font-black uppercase text-xs shadow-xl">Analyze Now</button>
+                <div class="border-2 border-dashed border-gray-800 rounded-3xl p-16 bg-black/20 mb-8 cursor-pointer text-gray-500"><p class="text-xs font-bold uppercase">Upload Chart Screenshot</p></div>
+                <button onclick="analyzeAI()" id="btn-analyze" class="w-full bg-cyan-600 py-4 rounded-2xl font-black uppercase text-xs">Analyze Now</button>
             </div>
         </div>
 
         <div id="page-vip" class="page px-4 lg:px-8 py-6 text-center">
-            <div class="max-w-md mx-auto bg-gradient-to-br from-orange-600 to-yellow-500 p-12 rounded-[50px] shadow-2xl">
+            <div class="max-w-md mx-auto bg-gradient-to-br from-orange-600 to-yellow-500 p-12 rounded-[50px]">
                 <i class="fas fa-crown text-6xl text-white mb-6"></i>
                 <h2 class="text-4xl font-black italic uppercase text-white mb-8">VIP Access</h2>
-                <a href="https://wa.me/6282258464062" target="_blank" class="bg-white text-orange-600 px-12 py-4 rounded-2xl font-black uppercase text-xs inline-block shadow-xl">Join VIP Now</a>
+                <a href="https://wa.me/6282258464062" target="_blank" class="bg-white text-orange-600 px-12 py-4 rounded-2xl font-black uppercase text-xs inline-block">Join VIP Now</a>
             </div>
         </div>
     </main>
 
     <script>
-    const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
-    let currentPair = ""; 
-    let tvWidget = null;
+        const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
+        let currentPair = ""; 
+        let tvWidget = null;
 
-    // 1. UPDATE DATA & TAMPILAN (LENGKAP)
-    async function updateData() {
-        try {
-            const res = await fetch(fbURL + "signal.json");
-            const d = await res.json();
+        // --- NAVIGASI ---
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchPage(pageId, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
             
-            if(d) {
-                const signalText = document.getElementById('web-signal');
-                
-                // Update Nama Pair & Signal
-                signalText.innerText = d.pair + (d.signal && d.signal !== "NEUTRAL" ? " - " + d.signal : "");
-                
-                // LOGIKA WARNA SINYAL
-                if(d.signal === "BUY") {
-                    signalText.style.color = "#00ff00"; 
-                    signalText.classList.add("animate-pulse");
-                } else if(d.signal === "SELL") {
-                    signalText.style.color = "#ff4444"; 
-                    signalText.classList.add("animate-pulse");
-                } else {
-                    signalText.style.color = "#ffffff";
-                    signalText.classList.remove("animate-pulse");
-                }
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+            if(el) el.classList.add('nav-active');
 
-                // Update Dashboard Elements
-                document.getElementById('web-price').innerText = d.price || '0.00000';
-                document.getElementById('web-zone').innerText = d.trend || 'SYNCING';
-                document.getElementById('web-reason').innerText = d.note || 'AI is scanning market structure...';
-                document.getElementById('web-time').innerText = "Last Update: " + (d.time || "--:--");
+            if(window.innerWidth < 1024) toggleMenu();
+        }
 
-                // UPDATE CHART OTOMATIS (TANPA RELOAD PUTIH)
-                if(d.pair && d.pair !== currentPair) {
-                    currentPair = d.pair;
-                    let source = (d.pair.includes("XA")) ? "OANDA:" : "FX_IDC:";
+        // --- ENGINE DATA ---
+        async function updateData() {
+            try {
+                const res = await fetch(fbURL + "signal.json");
+                const d = await res.json();
+                if(d) {
+                    const signalText = document.getElementById('web-signal');
+                    signalText.innerText = d.pair + (d.signal && d.signal !== "NEUTRAL" ? " - " + d.signal : "");
                     
-                    if(tvWidget && typeof tvWidget.chart === 'function') {
-                        tvWidget.chart().setSymbol(source + d.pair);
-                    } else {
-                        initTradingView(source + d.pair);
+                    if(d.signal === "BUY") { signalText.style.color = "#00ff00"; signalText.classList.add("animate-pulse"); }
+                    else if(d.signal === "SELL") { signalText.style.color = "#ff4444"; signalText.classList.add("animate-pulse"); }
+                    else { signalText.style.color = "#ffffff"; signalText.classList.remove("animate-pulse"); }
+
+                    document.getElementById('web-price').innerText = d.price || '0.00000';
+                    document.getElementById('web-zone').innerText = d.trend || 'WAITING';
+                    document.getElementById('web-reason').innerText = d.note || 'Scanning...';
+                    document.getElementById('web-time').innerText = "Update: " + (d.time || "--:--");
+
+                    if(d.pair && d.pair !== currentPair) {
+                        currentPair = d.pair;
+                        let source = d.pair.includes("XA") ? "OANDA:" : "FX_IDC:";
+                        if(tvWidget && typeof tvWidget.chart === 'function') {
+                            tvWidget.chart().setSymbol(source + d.pair);
+                        } else {
+                            initTradingView(source + d.pair);
+                        }
                     }
                 }
-            }
-        } catch(e) { console.log("Firebase Sync Error", e); }
-    }
+            } catch(e) { console.log(e); }
+        }
 
-    // 2. TRADINGVIEW INITIALIZER
-    function initTradingView(symbolName) {
-        document.getElementById('tv-chart-box').innerHTML = "";
-        tvWidget = new TradingView.widget({
-            "autosize": true,
-            "symbol": symbolName || "OANDA:XAUUSD",
-            "interval": "15",
-            "theme": "dark",
-            "style": "1",
-            "locale": "id",
-            "container_id": "tv-chart-box",
-            "hide_side_toolbar": false,
-            "allow_symbol_change": true
-        });
-    }
+        function initTradingView(symbolName) {
+            document.getElementById('tv-chart-box').innerHTML = "";
+            tvWidget = new TradingView.widget({
+                "autosize": true, "symbol": symbolName || "OANDA:XAUUSD", "interval": "15",
+                "theme": "dark", "style": "1", "locale": "id", "container_id": "tv-chart-box",
+                "hide_side_toolbar": false, "allow_symbol_change": true
+            });
+        }
 
-    // 3. FUNGSI ANALISA BUTTON
-    function analyzeAI() {
-        const btn = document.getElementById('btn-analyze');
-        btn.innerText = "SCANNING..."; btn.disabled = true;
-        setTimeout(() => { 
-            alert("AI Analysis: High Probability Setup detected on " + currentPair); 
-            btn.innerText = "Analyze Now"; btn.disabled = false;
-        }, 3000);
-    }
+        function analyzeAI() {
+            const btn = document.getElementById('btn-analyze');
+            btn.innerText = "SCANNING..."; btn.disabled = true;
+            setTimeout(() => { alert("Setup detected on " + currentPair); btn.innerText = "Analyze Now"; btn.disabled = false; }, 3000);
+        }
 
-    // 4. LOG SCANNING (FAKE LOGS)
-    function startLogs() {
-        const logs = ["> Scanning Liquidity...", "> Detecting CHoCH...", "> Analyzing OB...", "> Setup Confirmed."];
-        let i = 0; const box = document.getElementById('scan-log');
-        if(!box) return;
-        setInterval(() => {
-            const p = document.createElement('p');
-            p.innerText = logs[i % logs.length];
-            p.className = "mb-1 text-xs text-blue-400 font-mono";
-            box.appendChild(p);
-            box.scrollTop = box.scrollHeight;
-            i++;
-            if(box.children.length > 5) box.removeChild(box.firstChild);
-        }, 3000);
-    }
+        function startLogs() {
+            const logs = ["> Scanning Liquidity...", "> Detecting CHoCH...", "> Analyzing OB...", "> Setup Confirmed."];
+            let i = 0; const box = document.getElementById('scan-log');
+            if(!box) return;
+            setInterval(() => {
+                const p = document.createElement('p'); p.innerText = logs[i % logs.length];
+                p.className = "mb-1 text-xs text-blue-400 font-mono";
+                box.appendChild(p); box.scrollTop = box.scrollHeight; i++;
+                if(box.children.length > 8) box.removeChild(box.firstChild);
+            }, 3000);
+        }
 
-    // 5. NAVIGASI FIX (SAMA DENGAN ASLI)
-    function switchPage(pageId, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-        document.getElementById(pageId).classList.remove('hidden');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('text-blue-500'));
-        if(el) el.classList.add('text-blue-500');
-    }
-
-    // START SEMUA
-    window.onload = () => { 
-        initTradingView("OANDA:XAUUSD");
-        updateData(); 
-        setInterval(updateData, 5000); 
-        startLogs(); 
-        // Force Z-Index menu navigasi
-        const nav = document.querySelector('nav');
-        if(nav) nav.style.zIndex = "9999";
-    };
+        window.onload = () => { 
+            initTradingView("OANDA:XAUUSD"); 
+            updateData(); 
+            setInterval(updateData, 5000); 
+            startLogs(); 
+        };
     </script>
 </body>
 </html>
