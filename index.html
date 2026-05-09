@@ -237,21 +237,56 @@
             }
         }
         function analyzeVisual() {
-            const btn = document.getElementById('btn-ai-scan');
-            const res = document.getElementById('ai-result');
-            const note = document.getElementById('ai-note');
-            btn.innerText = "SMC ANALYZING..."; btn.disabled = true;
-            res.classList.remove('hidden');
-            note.innerHTML = "Detecting Fair Value Gaps (FVG) and CHoCH Structure...";
-            setTimeout(() => {
-                note.innerHTML = `
-                <p class="mb-2 text-white font-bold italic underline">KONFIRMASI SMC DETECTED:</p>
-                <p class="mb-2 uppercase text-green-500 font-black tracking-tighter">● BIAS: BULLISH</p>
-                <p class="mb-2 italic text-gray-400">"Market baru saja melakukan Sweep Liquidity di bawah Swing Low. Terdapat Orderblock bullish yang kuat. SL diletakkan tepat di bawah OB untuk keamanan maksimal, TP diletakkan di Premium Zone (External Liquidity High)."</p>
-                <p class="text-[9px] text-cyan-500 italic font-bold">Indikator Tambahan: FVG terisi 50% (Equilibrium).</p>`;
-                btn.innerText = "Scan with AI SMC Engine"; btn.disabled = false;
-            }, 3000);
-        }
+    const btn = document.getElementById('btn-ai-scan');
+    const resBox = document.getElementById('ai-result');
+    const noteArea = document.getElementById('ai-note');
+    const fileInput = document.getElementById('ai-upload');
+
+    if (!fileInput.files[0]) {
+        alert("Upload gambarnya dulu, Bro!");
+        return;
+    }
+
+    btn.innerText = "SENDING TO AI ENGINE...";
+    btn.disabled = true;
+
+    // Konversi gambar ke Base64 agar bisa masuk Firebase
+    const reader = new FileReader();
+    reader.readAsDataURL(fileInput.files[0]);
+    reader.onload = async function () {
+        const base64Image = reader.result;
+
+        // Kirim ke Firebase
+        const dataScan = {
+            image: base64Image,
+            chat: document.getElementById('ai-chat-input').value,
+            status: "processing",
+            timestamp: new Date().getTime()
+        };
+
+        await fetch(fbURL + "visual_scan.json", {
+            method: 'PUT',
+            body: JSON.stringify(dataScan)
+        });
+
+        resBox.classList.remove('hidden');
+        noteArea.innerHTML = "<div class='animate-pulse text-cyan-400'>AI sedang membedah struktur chart lo... Tunggu bentar.</div>";
+
+        // Cek hasil secara berkala (Polling)
+        const checkResult = setInterval(async () => {
+            const response = await fetch(fbURL + "visual_scan.json");
+            const result = await response.json();
+            
+            if (result.status === "ready") {
+                noteArea.innerHTML = result.analysis_result;
+                btn.innerText = "Start AI SMC Deep Scan";
+                btn.disabled = false;
+                clearInterval(checkResult);
+            }
+        }, 3000);
+    };
+}
+
 
         // DATA & CHART
         async function updateScanner() {
