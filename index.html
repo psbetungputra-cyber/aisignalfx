@@ -144,7 +144,6 @@
             if(el) el.classList.add('nav-active');
             if(window.innerWidth < 1024) toggleMenu();
         }
-
         async function updateData() {
     try {
         const res = await fetch(fbURL + "signal.json");
@@ -179,8 +178,8 @@
     } catch(e) {
         console.log("Sync Error:", e);
     }
-}
-
+        }
+        
         function analyzeAI() {
             const b = document.getElementById('btn-analyze');
             b.innerText = "SCANNING..."; b.disabled = true;
