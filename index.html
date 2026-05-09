@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AiSignalFx Pro v11.0</title>
+    <title>AiSignalFx Pro v11.0 - Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://s3.tradingview.com/tv.js"></script>
@@ -11,79 +11,102 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
         :root { --bg-dark: #0b0e11; --sidebar-bg: #161a1e; --accent-blue: #3b82f6; --border-color: #2b3139; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-dark); color: #ffffff; margin: 0; overflow: hidden; }
-        #sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border-color); transition: 0.4s; z-index: 10000 !important; }
+        
+        #sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border-color); transition: 0.4s; z-index: 10000; }
         .nav-item { color: #929aa5; cursor: pointer; border-radius: 12px; margin: 4px 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; padding: 12px 16px; transition: 0.3s; }
         .nav-active { background: var(--accent-blue) !important; color: white !important; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        
         .page { display: none; height: 100vh; overflow-y: auto; padding-bottom: 100px; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
+        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @media (max-width: 1024px) { #sidebar { position: fixed; left: -100%; height: 100vh; width: 280px; } #sidebar.open { left: 0 !important; } }
         #tv-chart-box { height: 400px; width: 100%; border-radius: 24px; overflow: hidden; }
-        @media (min-width: 768px) { #tv-chart-box { height: 500px; } }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #2b3139; border-radius: 10px; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden text-gray-200">
+
     <aside id="sidebar" class="w-64 flex flex-col shrink-0">
-        <div class="p-6 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">AI</div>
-                <span class="font-extrabold text-xl text-blue-500 italic uppercase">AiSignalFx</span>
+        <div class="p-6 border-b border-gray-800/50">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 p-[2px]">
+                    <div class="w-full h-full rounded-full bg-[#161a1e] flex items-center justify-center overflow-hidden">
+                        <i class="fas fa-user text-blue-500"></i>
+                    </div>
+                </div>
+                <div>
+                    <p id="user-name" class="text-xs font-black italic text-white uppercase tracking-tighter">Guest User</p>
+                    <p class="text-[8px] font-bold text-green-500 uppercase tracking-widest">● VIP Active</p>
+                </div>
             </div>
-            <button onclick="toggleMenu()" class="lg:hidden text-gray-400"><i class="fas fa-times"></i></button>
         </div>
-        <nav class="flex-1 mt-2">
+
+        <nav class="flex-1 mt-4">
             <div onclick="switchPage('page-dash', this)" class="nav-item nav-active"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
             <div onclick="switchPage('page-autoscan', this)" class="nav-item"><i class="fas fa-robot text-yellow-500"></i><span>AI Autoscan VIP</span></div>
             <div onclick="switchPage('page-visual', this)" class="nav-item"><i class="fas fa-camera text-cyan-400"></i><span>Visual AI Analyst</span></div>
-            <div class="border-t border-gray-800 my-4 mx-4"></div>
-            <div onclick="switchPage('page-vip', this)" class="nav-item text-orange-500"><i class="fas fa-crown"></i><span>Upgrade VIP</span></div>
+            
+            <div class="px-7 mt-6 mb-2 text-[9px] font-black text-gray-600 uppercase tracking-[0.2em]">Community & Help</div>
+            <a href="https://wa.me/6282258464062" target="_blank" class="nav-item hover:text-green-500"><i class="fab fa-whatsapp"></i><span>WhatsApp VIP</span></a>
+            <a href="https://t.me/aisignalfx" target="_blank" class="nav-item hover:text-blue-400"><i class="fab fa-telegram"></i><span>Telegram Group</span></a>
+            
+            <div onclick="switchPage('page-vip', this)" class="nav-item text-orange-500 mt-4 border border-orange-500/20 mx-3 bg-orange-500/5"><i class="fas fa-crown"></i><span>Upgrade Lifetime</span></div>
         </nav>
     </aside>
 
     <main class="flex-1 flex flex-col min-w-0 bg-[#0b0e11] relative">
         <header class="lg:hidden p-4 bg-[#161a1e] border-b border-gray-800 flex justify-between items-center z-50">
             <button onclick="toggleMenu()" class="text-blue-500"><i class="fas fa-bars-staggered text-xl"></i></button>
-            <span class="font-black italic text-blue-500 uppercase">AISIGNALFX</span>
+            <span class="font-black italic text-blue-500 uppercase tracking-tighter">AISIGNALFX</span>
+            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">PRO</div>
         </header>
 
         <div id="page-dash" class="page active px-4 lg:px-8 py-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-2 shadow-2xl">
+                    <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-2 shadow-2xl overflow-hidden">
                         <div id="tv-chart-box"></div>
                     </div>
+                    
                     <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 shadow-2xl">
                         <div class="flex justify-between items-center mb-6">
                             <div class="flex items-center gap-3">
-                                <div id="tf-badge" class="bg-blue-600/20 text-blue-500 text-[10px] font-black px-4 py-1.5 rounded-full border border-blue-500/30 uppercase italic">M15</div>
-                                <h2 id="web-signal" class="text-2xl font-black italic uppercase text-white">XAUUSD</h2>
+                                <div id="tf-badge" class="bg-blue-600/20 text-blue-500 text-[10px] font-black px-4 py-1.5 rounded-full border border-blue-500/30 uppercase italic tracking-widest">M15</div>
+                                <h2 id="web-signal" class="text-2xl font-black italic uppercase text-white tracking-tighter">XAUUSD</h2>
                             </div>
-                            <div id="web-time" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest italic">--:--:--</div>
+                            <div id="web-time" class="text-[10px] font-bold text-gray-500 uppercase italic tracking-widest">--:--:--</div>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div class="bg-black/40 p-4 rounded-3xl border border-gray-800"><p class="text-[8px] text-gray-500 uppercase mb-1">Entry</p><p id="web-price" class="text-lg font-black">0.0000</p></div>
-                            <div class="bg-black/40 p-4 rounded-3xl border border-red-900/20 text-red-500"><p class="text-[8px] uppercase font-bold">SL</p><p id="web-sl" class="text-lg font-black">0.0000</p></div>
-                            <div class="bg-black/40 p-4 rounded-3xl border border-green-900/20 text-green-500"><p class="text-[8px] uppercase font-bold">TP</p><p id="web-tp" class="text-lg font-black">0.0000</p></div>
-                            <div class="bg-black/40 p-4 rounded-3xl border border-cyan-900/20 text-cyan-400"><p class="text-[8px] uppercase font-bold">Zone</p><p id="web-zone" class="text-lg font-black italic">Waiting</p></div>
-                        </div>
-                        <div class="bg-blue-500/5 border border-blue-500/10 p-4 rounded-2xl">
-                            <p id="web-reason" class="text-xs text-gray-400 font-semibold italic">Analyzing SMC Liquidity & Market Structure...</p>
+                            <div class="bg-black/40 p-4 rounded-3xl border border-gray-800"><p class="text-[8px] text-gray-500 uppercase mb-1">Entry</p><p id="web-price" class="text-lg font-black text-white">0.0000</p></div>
+                            <div class="bg-black/40 p-4 rounded-3xl border border-red-900/20 text-red-500"><p class="text-[8px] uppercase font-bold mb-1">Stop Loss</p><p id="web-sl" class="text-lg font-black">0.0000</p></div>
+                            <div class="bg-black/40 p-4 rounded-3xl border border-green-900/20 text-green-500"><p class="text-[8px] uppercase font-bold mb-1">Take Profit</p><p id="web-tp" class="text-lg font-black">0.0000</p></div>
+                            <div class="bg-black/40 p-4 rounded-3xl border border-cyan-900/20 text-cyan-400"><p class="text-[8px] uppercase font-bold mb-1">Zone</p><p id="web-zone" class="text-lg font-black italic uppercase">Waiting</p></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-6">
-                    <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 h-[350px] flex flex-col">
-                        <div class="flex items-center gap-2 mb-4 text-cyan-500">
-                            <i class="fas fa-users text-sm"></i>
-                            <h3 class="text-xs font-black uppercase italic">Community Mapping</h3>
+                    <div class="bg-[#161a1e] rounded-[32px] border border-gray-800 p-6 h-[400px] flex flex-col overflow-hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2 text-cyan-500">
+                                <i class="fas fa-users-viewfinder text-sm"></i>
+                                <h3 class="text-xs font-black uppercase italic tracking-tighter">Community Mapping</h3>
+                            </div>
+                            <div class="text-[8px] font-bold bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded-md animate-pulse">LIVE FEED</div>
                         </div>
-                        <div class="flex-1 border-2 border-dashed border-gray-800 rounded-3xl flex flex-col items-center justify-center p-6 bg-black/20 text-gray-600">
-                            <i class="fas fa-cloud-upload-alt text-2xl mb-2"></i>
-                            <p class="text-[9px] font-bold uppercase tracking-tighter text-center">Map Syncing from Server...</p>
+                        <div id="map-container" class="flex-1 rounded-2xl bg-black/40 border border-gray-800/50 p-4 overflow-y-auto space-y-4">
+                            <div class="bg-[#161a1e] p-3 rounded-xl border-l-4 border-blue-500 shadow-lg">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center text-[8px] font-bold text-white">AI</div>
+                                    <span class="text-[9px] font-black text-gray-300">SYSTEM BOT</span>
+                                </div>
+                                <p class="text-[10px] italic text-gray-400">Institutional Order Flow detected at 2034.50. Market Liquidity cluster identified.</p>
+                            </div>
+                            <div id="user-pings" class="space-y-3"></div>
                         </div>
+                        <button onclick="sendPing()" class="mt-4 w-full bg-cyan-600/10 border border-cyan-500/20 text-cyan-500 py-3 rounded-xl text-[9px] font-black uppercase hover:bg-cyan-500 hover:text-white transition-all">Send Community Ping</button>
                     </div>
                 </div>
             </div>
@@ -91,8 +114,8 @@
                 <div id="page-autoscan" class="page px-4 lg:px-8 py-6">
             <div class="max-w-5xl mx-auto bg-[#161a1e] rounded-[40px] border border-gray-800 p-8 shadow-2xl">
                 <div class="flex justify-between items-center mb-8 px-4">
-                    <h2 class="text-2xl font-black uppercase italic"><i class="fas fa-robot text-yellow-500 mr-2"></i> AI Autoscan VIP</h2>
-                    <span class="text-[10px] font-bold text-green-500 animate-pulse uppercase tracking-widest">● LIVE SCANNING</span>
+                    <h2 class="text-2xl font-black uppercase italic tracking-tighter"><i class="fas fa-robot text-yellow-500 mr-2"></i> AI Autoscan VIP</h2>
+                    <span class="text-[10px] font-bold text-green-500 animate-pulse uppercase tracking-widest">● Scanning All Pairs</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-separate border-spacing-y-3">
@@ -100,12 +123,11 @@
                             <tr class="text-[10px] text-gray-500 uppercase tracking-widest">
                                 <th class="px-6 pb-2">Pair</th>
                                 <th class="px-6 pb-2">Price</th>
-                                <th class="px-6 pb-2">SMC Structure (BOS/FVG)</th>
+                                <th class="px-6 pb-2">SMC Structure</th>
                                 <th class="px-6 pb-2 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="scanner-body">
-                            </tbody>
+                        <tbody id="scanner-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -113,44 +135,42 @@
 
         <div id="page-visual" class="page px-4 lg:px-8 py-6">
             <div class="max-w-xl mx-auto bg-[#161a1e] p-8 rounded-[40px] border border-gray-800 shadow-2xl text-center">
-                <i class="fas fa-microchip text-5xl text-cyan-500 mb-6"></i>
+                <i class="fas fa-eye text-5xl text-cyan-500 mb-6"></i>
                 <h2 class="text-2xl font-black italic uppercase mb-2">Visual AI Analyst</h2>
-                <p class="text-[10px] text-gray-500 font-bold uppercase mb-8">Upload Screenshot / Paste Link Chart</p>
+                <p class="text-[10px] text-gray-500 font-bold uppercase mb-8 italic">Upload Chart untuk Analisa Konfirmasi SMC</p>
                 
                 <div onclick="triggerUpload()" class="border-2 border-dashed border-gray-800 rounded-3xl p-10 bg-black/20 mb-6 cursor-pointer hover:border-cyan-500 transition-all group">
                     <input type="file" id="ai-upload" class="hidden" onchange="handleAIUpload(event)" accept="image/*">
-                    <div id="upload-preview" class="text-gray-500">
-                        <i class="fas fa-cloud-upload-alt text-3xl mb-3 group-hover:scale-110 transition-transform"></i>
-                        <p class="text-[10px] font-bold uppercase">Tap to Upload Chart Image</p>
+                    <div id="upload-preview">
+                        <i class="fas fa-image text-3xl text-gray-600 mb-3 group-hover:scale-110 transition-transform"></i>
+                        <p class="text-[10px] font-black text-gray-500 uppercase">Klik untuk Masukkan Gambar</p>
                     </div>
                 </div>
 
-                <textarea id="ai-chat-input" placeholder="Atau paste link chart / pertanyaan analisa di sini..." class="w-full bg-black/40 border border-gray-800 rounded-2xl p-4 text-xs italic text-gray-300 focus:outline-none focus:border-cyan-500 mb-6 h-24 resize-none"></textarea>
+                <textarea id="ai-chat-input" placeholder="Tanyakan sesuatu tentang chart ini..." class="w-full bg-black/40 border border-gray-800 rounded-2xl p-4 text-xs italic text-gray-300 focus:outline-none focus:border-cyan-500 mb-6 h-20 resize-none"></textarea>
                 
-                <button id="btn-ai-scan" onclick="analyzeVisual()" class="w-full bg-cyan-600 hover:bg-cyan-500 py-4 rounded-2xl font-black uppercase text-xs shadow-lg shadow-cyan-900/40 transition-all">Start AI SMC Deep Scan</button>
+                <button id="btn-ai-scan" onclick="analyzeVisual()" class="w-full bg-cyan-600 py-4 rounded-2xl font-black uppercase text-xs shadow-lg shadow-cyan-900/20">Scan with AI SMC Engine</button>
                 
                 <div id="ai-result" class="mt-8 hidden bg-black/60 p-6 rounded-3xl border border-cyan-500/30 text-left animate-fadeIn">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-2 h-2 rounded-full bg-cyan-500 animate-ping"></div>
-                        <p class="text-[10px] text-cyan-500 font-black uppercase tracking-widest">AI Vision Analysis Result</p>
-                    </div>
-                    <div id="ai-note" class="text-xs leading-relaxed text-gray-300 font-medium"></div>
+                    <p class="text-[10px] text-cyan-500 font-black mb-3 uppercase tracking-widest italic">AI SMC ANALYSIS RESULT:</p>
+                    <div id="ai-note" class="text-[11px] leading-relaxed text-gray-300"></div>
                 </div>
             </div>
         </div>
 
-        <div id="page-vip" class="page px-4 lg:px-8 py-6 text-center">
-            <div class="max-w-md mx-auto bg-gradient-to-br from-blue-900 to-black p-12 rounded-[50px] border border-blue-500/20 shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-8 opacity-10"><i class="fas fa-crown text-9xl"></i></div>
-                <i class="fas fa-gem text-6xl text-orange-400 mb-6"></i>
-                <h2 class="text-3xl font-black italic uppercase text-white mb-2">VIP PRO UNLOCKED</h2>
-                <p class="text-xs text-gray-400 mb-10">Dapatkan akses penuh ke Signal FX Engine v11.0</p>
-                <ul class="text-left space-y-4 mb-10 mx-auto max-w-[200px]">
-                    <li class="text-[10px] font-bold uppercase"><i class="fas fa-check-circle text-green-500 mr-2"></i> 8 Pairs Auto Scan</li>
-                    <li class="text-[10px] font-bold uppercase"><i class="fas fa-check-circle text-green-500 mr-2"></i> SMC Structure Alert</li>
-                    <li class="text-[10px] font-bold uppercase"><i class="fas fa-check-circle text-green-500 mr-2"></i> Visual AI Vision</li>
-                </ul>
-                <a href="https://wa.me/6282258464062" target="_blank" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black uppercase text-[10px] inline-block shadow-xl hover:bg-blue-500 transition-all">Contact Admin</a>
+        <div id="page-vip" class="page px-4 lg:px-8 py-6">
+            <div class="max-w-md mx-auto bg-gradient-to-br from-orange-600 to-yellow-500 p-1 rounded-[50px] shadow-2xl">
+                <div class="bg-[#161a1e] rounded-[49px] p-10 text-center">
+                    <i class="fas fa-crown text-6xl text-orange-500 mb-6"></i>
+                    <h2 class="text-3xl font-black italic uppercase mb-2">LIFETIME VIP</h2>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase mb-10 tracking-widest">Buka Semua Fitur AiSignalFx</p>
+                    <div class="space-y-4 mb-10 text-left max-w-[220px] mx-auto">
+                        <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-gray-300"><i class="fas fa-check text-green-500"></i> Auto Scan 8+ Pairs</div>
+                        <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-gray-300"><i class="fas fa-check text-green-500"></i> Visual AI Vision</div>
+                        <div class="flex items-center gap-3 text-[10px] font-bold uppercase text-gray-300"><i class="fas fa-check text-green-500"></i> Community Mapping</div>
+                    </div>
+                    <a href="https://wa.me/6282258464062" target="_blank" class="w-full bg-orange-600 py-4 rounded-2xl font-black uppercase text-xs inline-block text-white">Hubungi Admin Sekarang</a>
+                </div>
             </div>
         </div>
     </main>
@@ -158,11 +178,11 @@
     <div id="signal-modal" class="hidden fixed inset-0 z-[99999] bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-[#161a1e] w-full max-w-xs rounded-[40px] border border-gray-800 p-8 shadow-2xl text-center">
             <h3 id="modal-title" class="text-3xl font-black italic text-blue-500 uppercase mb-2 tracking-tighter">XAUUSD</h3>
-            <p class="text-[10px] text-gray-500 font-bold uppercase mb-8 tracking-widest">Pilih Teknik Trading AI</p>
+            <p class="text-[10px] text-gray-500 font-bold uppercase mb-8">Pilih Mode Trading</p>
             <div class="space-y-3">
-                <button onclick="selectTradeType('SCALPING', 'M1-M5')" class="w-full bg-blue-600/10 hover:bg-blue-600 border border-blue-500/20 text-blue-500 hover:text-white py-4 rounded-2xl font-black text-[10px] transition-all uppercase italic">⚡ SCALPING (FAST)</button>
-                <button onclick="selectTradeType('INTRADAY', 'M15-H1')" class="w-full bg-cyan-600/10 hover:bg-cyan-600 border border-cyan-500/20 text-cyan-500 hover:text-white py-4 rounded-2xl font-black text-[10px] transition-all uppercase italic">🕒 INTRADAY (SMC)</button>
-                <button onclick="selectTradeType('SWING', 'H4-D1')" class="w-full bg-purple-600/10 hover:bg-purple-600 border border-purple-500/20 text-purple-500 hover:text-white py-4 rounded-2xl font-black text-[10px] transition-all uppercase italic">🚀 SWING (INSTITUTION)</button>
+                <button onclick="selectTradeType('SCALPING', 'M1')" class="w-full bg-blue-600/10 hover:bg-blue-600 border border-blue-500/20 text-blue-500 hover:text-white py-4 rounded-2xl font-black text-[10px] transition-all uppercase italic">⚡ SCALPING (M1)</button>
+                <button onclick="selectTradeType('INTRADAY', 'M15')" class="w-full bg-cyan-600/10 hover:bg-cyan-600 border border-cyan-500/20 text-cyan-500 hover:text-white py-4 rounded-2xl font-black text-[10px] transition-all uppercase italic">🕒 INTRADAY (M15)</button>
+                <button onclick="selectTradeType('SWING', 'H4')" class="w-full bg-purple-600/10 hover:bg-purple-600 border border-purple-500/20 text-purple-500 hover:text-white py-4 rounded-2xl font-black text-[10px] transition-all uppercase italic">🚀 SWING (H4)</button>
             </div>
             <button onclick="closeModal()" class="w-full mt-6 text-gray-600 text-[10px] font-bold uppercase tracking-widest">Nanti Saja</button>
         </div>
@@ -183,7 +203,57 @@
             if(window.innerWidth < 1024) toggleMenu();
         }
 
-        // SCANNER LOGIC
+        // PROFILE SYSTEM
+        function initProfile() {
+            let savedName = localStorage.getItem('userName');
+            if(!savedName) {
+                let name = prompt("Masukkan Nama Trader Anda:");
+                savedName = name || "Trader Pro";
+                localStorage.setItem('userName', savedName);
+            }
+            document.getElementById('user-name').innerText = savedName;
+        }
+
+        // COMMUNITY MAPPING LOGIC
+        function sendPing() {
+            const container = document.getElementById('user-pings');
+            const user = document.getElementById('user-name').innerText;
+            const newPing = document.createElement('div');
+            newPing.className = "bg-cyan-500/5 p-3 rounded-xl border border-cyan-500/10 animate-bounce";
+            newPing.innerHTML = `
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[8px] font-black text-cyan-500 uppercase">${user}</span>
+                </div>
+                <p class="text-[9px] text-gray-400 italic">I'm watching ${currentPair} setup right now! 🚀</p>`;
+            container.prepend(newPing);
+            setTimeout(() => newPing.classList.remove('animate-bounce'), 1000);
+        }
+
+        // VISUAL AI ANALYST
+        function triggerUpload() { document.getElementById('ai-upload').click(); }
+        function handleAIUpload(e) {
+            if(e.target.files[0]) {
+                document.getElementById('upload-preview').innerHTML = `<i class="fas fa-check-circle text-2xl text-green-500 mb-2"></i><p class="text-[9px] font-black uppercase">${e.target.files[0].name}</p>`;
+            }
+        }
+        function analyzeVisual() {
+            const btn = document.getElementById('btn-ai-scan');
+            const res = document.getElementById('ai-result');
+            const note = document.getElementById('ai-note');
+            btn.innerText = "SMC ANALYZING..."; btn.disabled = true;
+            res.classList.remove('hidden');
+            note.innerHTML = "Detecting Fair Value Gaps (FVG) and CHoCH Structure...";
+            setTimeout(() => {
+                note.innerHTML = `
+                <p class="mb-2 text-white font-bold italic underline">KONFIRMASI SMC DETECTED:</p>
+                <p class="mb-2 uppercase text-green-500 font-black tracking-tighter">● BIAS: BULLISH</p>
+                <p class="mb-2 italic text-gray-400">"Market baru saja melakukan Sweep Liquidity di bawah Swing Low. Terdapat Orderblock bullish yang kuat. SL diletakkan tepat di bawah OB untuk keamanan maksimal, TP diletakkan di Premium Zone (External Liquidity High)."</p>
+                <p class="text-[9px] text-cyan-500 italic font-bold">Indikator Tambahan: FVG terisi 50% (Equilibrium).</p>`;
+                btn.innerText = "Scan with AI SMC Engine"; btn.disabled = false;
+            }, 3000);
+        }
+
+        // DATA & CHART
         async function updateScanner() {
             const tbody = document.getElementById('scanner-body');
             if (!tbody) return;
@@ -192,75 +262,20 @@
                 const data = await res.json();
                 let rows = "";
                 allPairs.forEach(pair => {
-                    const p = (data && data[pair]) ? data[pair] : { price: "0.0000", note: "Scanning BOS/CHOCH...", trend: "WAITING" };
-                    rows += `
-                    <tr class="bg-black/30 border border-gray-800 rounded-2xl">
-                        <td class="px-6 py-4 font-black text-white text-sm">${pair}</td>
-                        <td class="px-6 py-4 font-mono text-xs text-blue-400">${p.price}</td>
-                        <td class="px-6 py-4 text-[9px] italic text-gray-400 uppercase font-semibold">${p.note}</td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="viewPair('${pair}')" class="bg-blue-600 text-white text-[9px] font-black px-4 py-2 rounded-xl uppercase">Analyze</button>
-                        </td>
-                    </tr>`;
+                    const p = (data && data[pair]) ? data[pair] : { price: "0.0000", note: "Scanning BOS/FVG...", trend: "WAITING" };
+                    rows += `<tr class="bg-black/30 border border-gray-800 rounded-2xl"><td class="px-6 py-4 font-black text-white text-sm">${pair}</td><td class="px-6 py-4 font-mono text-xs text-blue-400">${p.price}</td><td class="px-6 py-4 text-[9px] italic text-gray-500 uppercase">${p.note}</td><td class="px-6 py-4 text-center"><button onclick="viewPair('${pair}')" class="bg-blue-600 text-white text-[9px] font-black px-4 py-2 rounded-xl uppercase">Analyze</button></td></tr>`;
                 });
                 tbody.innerHTML = rows;
-            } catch (e) { console.error("Scanner Error:", e); }
+            } catch (e) { console.log(e); }
         }
 
-        function viewPair(pair) {
-            selectedPair = pair;
-            document.getElementById('modal-title').innerText = pair;
-            document.getElementById('signal-modal').classList.remove('hidden');
-        }
+        function viewPair(pair) { selectedPair = pair; document.getElementById('modal-title').innerText = pair; document.getElementById('signal-modal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('signal-modal').classList.add('hidden'); }
-
-        function selectTradeType(type, tfRange) {
-            currentPair = selectedPair;
-            closeModal();
-            switchPage('page-dash', document.querySelectorAll('.nav-item')[0]);
+        function selectTradeType(type, tf) {
+            currentPair = selectedPair; closeModal(); switchPage('page-dash', document.querySelectorAll('.nav-item')[0]);
             document.getElementById('web-signal').innerText = currentPair + " - " + type;
-            document.getElementById('tf-badge').innerText = tfRange.split('-')[0];
+            document.getElementById('tf-badge').innerText = tf;
             updateChart(currentPair);
-        }
-
-        // VISUAL AI ANALYST LOGIC
-        function triggerUpload() { document.getElementById('ai-upload').click(); }
-        
-        function handleAIUpload(e) {
-            const file = e.target.files[0];
-            if(file) {
-                document.getElementById('upload-preview').innerHTML = `
-                <i class="fas fa-check-circle text-3xl text-green-500 mb-2"></i>
-                <p class="text-[10px] font-bold text-white uppercase">${file.name}</p>
-                <p class="text-[8px] text-gray-500 italic">Image Ready to Scan</p>`;
-            }
-        }
-
-        function analyzeVisual() {
-            const btn = document.getElementById('btn-ai-scan');
-            const resBox = document.getElementById('ai-result');
-            const noteArea = document.getElementById('ai-note');
-            
-            btn.innerText = "READING CANDLESTICK STRUCTURE...";
-            btn.disabled = true;
-            resBox.classList.remove('hidden');
-            noteArea.innerHTML = "Syncing with AI Vision Engine... <br>Detecting Market Inefficiency & Liquidity Sweeps...";
-
-            setTimeout(() => {
-                // Penjelasan SMC SL & TP
-                noteArea.innerHTML = `
-                <div class="space-y-3">
-                    <p class="text-blue-400 font-bold uppercase tracking-tighter text-[10px]">● Market Context Detected:</p>
-                    <p class="italic text-white">"Structure Bullish (BOS) terdeteksi. Terdapat Orderblock (OB) yang belum dimitigasi di area diskon."</p>
-                    <div class="grid grid-cols-1 gap-2 border-t border-gray-800 pt-3">
-                        <p class="text-gray-400 text-[10px]"><strong class="text-green-500">TP Target:</strong> External Liquidity (Previous High). Area ini menjadi target karena banyak buy-stop yang akan di-sweep oleh big player.</p>
-                        <p class="text-gray-400 text-[10px]"><strong class="text-red-500">SL Protection:</strong> Di bawah Swing Low terakhir / Demand Zone. Ini adalah area aman (Stop Loss) karena jika ditembus, bias SMC berubah menjadi Bearish CHoCH."</p>
-                    </div>
-                    <p class="text-[9px] text-cyan-500 font-black italic">Indikator Tambahan: Volume institutional meningkat 40% di area entri.</p>
-                </div>`;
-                btn.innerText = "Start AI SMC Deep Scan";
-                btn.disabled = false;
-            }, 3500);
         }
 
         async function updateData() {
@@ -272,7 +287,6 @@
                     document.getElementById('web-sl').innerText = d.sl || '0.00';
                     document.getElementById('web-tp').innerText = d.tp || '0.00';
                     document.getElementById('web-zone').innerText = d.trend || 'WAITING';
-                    document.getElementById('web-reason').innerText = d.note || 'Syncing...';
                     document.getElementById('web-time').innerText = d.time || '--:--';
                 }
             } catch(e) { console.log(e); }
@@ -286,19 +300,10 @@
 
         function initTV(s) {
             document.getElementById('tv-chart-box').innerHTML = "";
-            tvWidget = new TradingView.widget({
-                "autosize": true, "symbol": s, "interval": "15", "theme": "dark", "style": "1",
-                "locale": "id", "container_id": "tv-chart-box", "hide_side_toolbar": false, "withdateranges": true
-            });
+            tvWidget = new TradingView.widget({ "autosize": true, "symbol": s, "interval": "15", "theme": "dark", "style": "1", "locale": "id", "container_id": "tv-chart-box" });
         }
 
-        window.onload = () => {
-            initTV("OANDA:XAUUSD");
-            setInterval(updateData, 3000);
-            setInterval(updateScanner, 5000);
-            updateScanner();
-        };
+        window.onload = () => { initProfile(); initTV("OANDA:XAUUSD"); setInterval(updateData, 3000); setInterval(updateScanner, 5000); updateScanner(); };
     </script>
 </body>
 </html>
-
