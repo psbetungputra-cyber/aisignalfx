@@ -7,26 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://s3.tradingview.com/tv.js"></script>
-    <style>
-        body { background-color: #0b0e11; color: white; font-family: sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .page { display: none; }
-        .page.active { display: block; }
-        
-        /* FIX SIDEBAR HP */
-        @media (max-width: 1024px) {
-            #sidebar {
-                position: fixed;
-                left: -100%;
-                width: 280px;
-                height: 100vh;
-                z-index: 999;
-                transition: 0.3s ease-in-out;
-                background: #0f1216;
-            }
-            #sidebar.active { left: 0; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="flex min-h-screen">
 
@@ -43,13 +24,22 @@
         </div>
 
         <nav class="flex-1 mt-6 px-4 space-y-2">
-            <div onclick="switchPage('page-dash')" class="p-4 hover:bg-white/5 rounded-xl cursor-pointer flex items-center gap-3 text-xs font-bold uppercase italic">
+            <div onclick="switchPage('page-dash')" class="menu-item">
                 <i class="fas fa-chart-line"></i> Dashboard
             </div>
-            <div onclick="switchPage('page-autoscan')" class="p-4 hover:bg-white/5 rounded-xl cursor-pointer flex items-center gap-3 text-xs font-bold uppercase italic">
+            <div onclick="switchPage('page-aiscan')" class="menu-item">
+                <i class="fas fa-microchip text-blue-400"></i> AI Brain Analysis
+            </div>
+            <div onclick="switchPage('page-autoscan')" class="menu-item">
                 <i class="fas fa-bolt text-amber-500"></i> AutoScan VIP
             </div>
-            <div onclick="switchPage('page-admin')" class="p-4 bg-blue-600/10 text-blue-400 rounded-xl cursor-pointer flex items-center gap-3 text-xs font-bold uppercase italic border border-blue-500/20">
+            <div onclick="switchPage('page-learn')" class="menu-item">
+                <i class="fas fa-graduation-cap"></i> SMC Strategy
+            </div>
+            <div onclick="switchPage('page-wallet')" class="menu-item">
+                <i class="fas fa-wallet text-green-500"></i> Subscription
+            </div>
+            <div onclick="switchPage('page-admin')" class="menu-item bg-blue-600/10 text-blue-400 border border-blue-500/20">
                 <i class="fas fa-user-shield"></i> Admin Master
             </div>
         </nav>
@@ -91,6 +81,18 @@
             </div>
         </div>
 
+        <div id="page-aiscan" class="page p-6">
+            <div class="glass p-8 text-center border-dashed border-2 border-blue-500/30">
+                <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-4"></i>
+                <h2 class="text-xl font-black italic">UPLOAD CHART</h2>
+                <p class="text-xs text-gray-500 mb-6">AI akan mendeteksi BOS, CHoCH, dan Order Block secara otomatis.</p>
+                <input type="file" id="ai-upload" class="hidden">
+                <button onclick="document.getElementById('ai-upload').click()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl font-bold italic text-sm transition">
+                    PILIH GAMBAR
+                </button>
+            </div>
+        </div>
+
         <div id="page-autoscan" class="page p-6">
             <div id="signal-display-area" class="hidden glass p-8 mb-6 border-blue-500/20 animate-pulse">
                 <h2 id="active-pair" class="text-3xl font-black italic mb-4">---</h2>
@@ -106,78 +108,28 @@
                 </div>
                 <p id="sig-note" class="mt-4 text-xs italic text-gray-400"></p>
             </div>
-
             <div class="glass p-6">
                 <table class="w-full text-left">
-                    <thead class="text-[9px] text-gray-600 uppercase italic">
-                        <tr><th class="p-3">Pair</th><th class="p-3">Status</th><th class="p-3">Action</th></tr>
-                    </thead>
                     <tbody id="pair-list-body"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="page-admin" class="page p-6">
-            <div class="glass p-10 text-center">
-                <i class="fas fa-lock text-4xl text-blue-500 mb-4"></i>
-                <h2 class="text-2xl font-black italic">CONTROL PANEL</h2>
-                <p class="text-xs text-gray-500 mt-2">Manage Users & Sinyal Master di sini.</p>
+        <div id="page-wallet" class="page p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6 border-l-4 border-green-500">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase">Status Akun</p>
+                    <h2 class="text-2xl font-black text-green-500 italic">VIP LIFETIME</h2>
+                </div>
+                <div class="glass p-6 border-l-4 border-blue-500">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase">Payment Method</p>
+                    <p class="text-xs mt-2 italic text-gray-400">SeaBank / Bank Neo / DANA</p>
+                </div>
             </div>
         </div>
+
     </main>
 
-    <script>
-        // DATA MASTER
-        const PAIRS = [
-            { name: "XAUUSD", sl: "2315.40", tp: "2368.00", note: "Institutional Order Block H1" },
-            { name: "BTCUSDT", sl: "61200", tp: "68000", note: "Liquidity Sweep detected" },
-            { name: "EURUSD", sl: "1.0820", tp: "1.0950", note: "BOS Structure on M15" }
-        ];
-
-        // FUNGSI NAVIGASI
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function switchPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(window.innerWidth < 1024) toggleSidebar();
-        }
-
-        // FUNGSI CORE
-        function initApp() {
-            // Load Chart
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": "OANDA:XAUUSD",
-                "interval": "15",
-                "container_id": "tv-full-container",
-                "theme": "dark",
-                "style": "1",
-                "locale": "id"
-            });
-
-            // Load Pair Table
-            const body = document.getElementById('pair-list-body');
-            PAIRS.forEach(p => {
-                body.innerHTML += `
-                    <tr onclick="selectPair('${p.name}')" class="border-b border-white/5 hover:bg-white/5 cursor-pointer">
-                        <td class="p-4 font-bold italic">${p.name}</td>
-                        <td class="p-4 text-[10px] text-blue-500 font-bold uppercase">SMC Scan</td>
-                        <td class="p-4 text-right"><i class="fas fa-chevron-right"></i></td>
-                    </tr>`;
-            });
-        }
-
-        function selectPair(name) {
-            const data = PAIRS.find(p => p.name === name);
-            document.getElementById('signal-display-area').classList.remove('hidden');
-            document.getElementById('active-pair').innerText = data.name;
-            document.getElementById('sig-sl').innerText = data.sl;
-            document.getElementById('sig-tp').innerText = data.tp;
-            document.getElementById('sig-note').innerText = data.note;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        window.onload = initApp;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
