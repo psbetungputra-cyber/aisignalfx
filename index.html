@@ -2,546 +2,182 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AiSignalFx v12.0 - Institutional Terminal</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiSignalFx - Pro Terminal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://s3.tradingview.com/tv.js"></script>
-    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
-        :root { 
-            --bg-dark: #0b0e11; 
-            --panel-bg: rgba(22, 26, 30, 0.6); 
-            --accent-blue: #3b82f6; 
-            --border-color: rgba(255, 255, 255, 0.05); 
-        }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: radial-gradient(circle at top right, #1e293b, #0b0e11); 
-            color: #ffffff; 
-            margin: 0; 
-            overflow: hidden; 
-        }
-
-        /* Glassmorphism Effect */
-        .glass { background: var(--panel-bg); backdrop-filter: blur(15px); border: 1px solid var(--border-color); border-radius: 24px; }
-        .glass-dark { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); border: 1px solid var(--border-color); }
-
-        /* Sidebar & Nav */
-        #sidebar { background: rgba(15, 18, 22, 0.95); border-right: 1px solid var(--border-color); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 50; }
-        .nav-item { color: #929aa5; cursor: pointer; border-radius: 16px; margin: 4px 12px; font-weight: 600; display: flex; align-items: center; gap: 12px; padding: 14px 18px; transition: 0.3s; font-size: 13px; }
-        .nav-active { background: var(--accent-blue) !important; color: white !important; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #2b3139; border-radius: 10px; }
-
-        /* Page Layout */
-        .page { display: none; height: 100vh; overflow-y: auto; padding-bottom: 100px; animation: slideUp 0.4s ease-out; }
+        body { background-color: #0b0e11; color: white; font-family: sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .page { display: none; }
         .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Sentiment Bar */
-        .sentiment-bar { height: 10px; border-radius: 20px; background: #1e222d; overflow: hidden; display: flex; }
-        .bull-fill { background: linear-gradient(90deg, #10b981, #34d399); transition: 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-        .bear-fill { background: linear-gradient(90deg, #f87171, #ef4444); transition: 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-
-        /* Social Post Card */
-        .post-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 20px; margin-bottom: 20px; }
-        .post-img { width: 100%; border-radius: 18px; margin-top: 12px; object-fit: cover; max-height: 400px; }
+        
+        /* FIX SIDEBAR HP */
+        @media (max-width: 1024px) {
+            #sidebar {
+                position: fixed;
+                left: -100%;
+                width: 280px;
+                height: 100vh;
+                z-index: 999;
+                transition: 0.3s ease-in-out;
+                background: #0f1216;
+            }
+            #sidebar.active { left: 0; }
+        }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body class="flex min-h-screen">
 
-    <div id="auth-screen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0b0e11] px-6">
-        <div class="w-full max-w-md glass p-10 shadow-2xl text-center">
-            <h1 class="text-4xl font-black text-blue-500 mb-2 italic tracking-tighter uppercase">AiSignalFx <span class="text-white">v12</span></h1>
-            <p class="text-[10px] text-gray-500 uppercase font-bold tracking-[0.4em] mb-10">Institutional Access Terminal</p>
-            
-            <div id="login-form" class="space-y-4">
-                <input type="email" id="user-email" placeholder="Gmail Address" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-sm outline-none focus:border-blue-500 transition-all">
-                <input type="password" id="user-pass" placeholder="Secret Key" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-sm outline-none focus:border-blue-500 transition-all">
-                <button onclick="handleAuth('login')" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-blue-900/20">Sign In</button>
-                <p class="text-[10px] text-gray-500">Belum punya akses? <span onclick="toggleAuth()" class="text-blue-500 cursor-pointer font-bold">Daftar via WhatsApp/Gmail</span></p>
-            </div>
-
-            <div id="register-form" class="space-y-4 hidden">
-                <input type="text" id="reg-name" placeholder="Full Name" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-sm outline-none">
-                <input type="email" id="reg-email" placeholder="Gmail Address" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-sm outline-none">
-                <input type="number" id="reg-wa" placeholder="WhatsApp Number (08...)" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-sm outline-none">
-                <button onclick="handleAuth('register')" class="w-full bg-green-600 hover:bg-green-700 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all">Request Access</button>
-                <p class="text-[10px] text-gray-500">Sudah punya akun? <span onclick="toggleAuth()" class="text-blue-500 cursor-pointer font-bold">Masuk</span></p>
-            </div>
-        </div>
-    </div>
-        <aside id="sidebar" class="w-64 flex flex-col shrink-0">
-        <div class="p-6 border-b border-white/5">
+    <aside id="sidebar" class="w-64 border-r border-white/5 flex flex-col shrink-0">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
-                    <i class="fas fa-user-astronaut text-white"></i>
-                </div>
-                <div class="overflow-hidden">
-                    <p id="display-name" class="text-[11px] font-black italic text-white uppercase truncate">Guest Trader</p>
-                    <div id="status-badge" class="text-[8px] font-bold text-blue-500 uppercase tracking-widest italic mt-0.5">Free Access</div>
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold">PS</div>
+                <div>
+                    <p class="text-xs font-bold uppercase italic">Master Admin</p>
+                    <p class="text-[8px] text-blue-500 font-bold uppercase">Lifetime Access</p>
                 </div>
             </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-white"><i class="fas fa-times"></i></button>
         </div>
 
-        <nav class="flex-1 mt-6">
-            <div onclick="switchPage('page-dash', this)" class="nav-item nav-active">
-                <i class="fas fa-layer-group"></i><span>Dashboard</span>
+        <nav class="flex-1 mt-6 px-4 space-y-2">
+            <div onclick="switchPage('page-dash')" class="p-4 hover:bg-white/5 rounded-xl cursor-pointer flex items-center gap-3 text-xs font-bold uppercase italic">
+                <i class="fas fa-chart-line"></i> Dashboard
             </div>
-            <div onclick="checkVipAccess('page-autoscan', this)" class="nav-item">
-                <i class="fas fa-bolt text-amber-500"></i><span>AutoScan VIP</span>
+            <div onclick="switchPage('page-autoscan')" class="p-4 hover:bg-white/5 rounded-xl cursor-pointer flex items-center gap-3 text-xs font-bold uppercase italic">
+                <i class="fas fa-bolt text-amber-500"></i> AutoScan VIP
             </div>
-            <div onclick="switchPage('page-visual', this)" class="nav-item">
-                <i class="fas fa-brain text-cyan-400"></i><span>Visual AI Analyst</span>
+            <div onclick="switchPage('page-admin')" class="p-4 bg-blue-600/10 text-blue-400 rounded-xl cursor-pointer flex items-center gap-3 text-xs font-bold uppercase italic border border-blue-500/20">
+                <i class="fas fa-user-shield"></i> Admin Master
             </div>
-            
-            <div id="admin-nav" class="hidden">
-                <div class="px-8 mt-8 mb-2 text-[9px] font-black text-blue-500 uppercase italic tracking-[0.3em]">Master System</div>
-                <div onclick="switchPage('page-admin', this)" class="nav-item bg-blue-600/5 text-blue-400 border border-blue-500/10">
-                    <i class="fas fa-user-gear"></i><span>Admin Console</span>
-                </div>
-            </div>
-
-            <div class="px-8 mt-8 mb-2 text-[9px] font-black text-gray-600 uppercase italic tracking-[0.3em]">Support</div>
-            <a href="https://wa.me/6282258464062" target="_blank" class="nav-item hover:text-green-500">
-                <i class="fab fa-whatsapp"></i><span>VIP Concierge</span>
-            </a>
         </nav>
-        
+
         <div class="p-6 border-t border-white/5">
-            <button onclick="logout()" class="w-full py-3 text-[10px] font-black text-gray-500 uppercase hover:text-red-500 transition-all italic tracking-widest">Terminate Session</button>
+            <a href="https://wa.me/6282258464062" target="_blank" class="flex items-center gap-2 text-[10px] text-gray-500 hover:text-green-500 font-bold uppercase italic">
+                <i class="fab fa-whatsapp"></i> WhatsApp VIP
+            </a>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col min-w-0 relative">
-        <header class="lg:hidden p-5 bg-[#0f1216] border-b border-white/5 flex justify-between items-center z-50">
-            <button onclick="toggleMenu()" class="text-blue-500 text-xl"><i class="fas fa-bars-staggered"></i></button>
-            <span class="font-black italic text-blue-500 uppercase tracking-tighter">AiSignalFx</span>
-            <div id="mob-status" class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+    <main class="flex-1 flex flex-col relative overflow-y-auto h-screen">
+        <header class="p-5 border-b border-white/5 flex justify-between items-center bg-[#0b0e11] sticky top-0 z-50">
+            <button onclick="toggleSidebar()" class="lg:hidden text-blue-500 text-xl"><i class="fas fa-bars"></i></button>
+            <span class="font-black italic text-blue-500 uppercase">AiSignalFx</span>
+            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
         </header>
 
-        <div id="page-dash" class="page active px-4 lg:px-10 py-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <div class="lg:col-span-8 space-y-8">
-                    <div class="glass p-2 h-[500px] overflow-hidden shadow-2xl relative border-blue-500/10">
-                        <div id="tv-full-container" class="w-full h-full rounded-2xl overflow-hidden"></div>
+        <div id="page-dash" class="page active p-6">
+            <div id="tv-full-container" class="glass h-[450px] w-full mb-6 overflow-hidden"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6">
+                    <h3 class="text-[10px] font-bold uppercase text-gray-500 mb-4 italic">Market Sentiment</h3>
+                    <div class="flex justify-between text-[10px] font-bold mb-2">
+                        <span class="text-green-500">BULL 65%</span>
+                        <span class="text-red-500">BEAR 35%</span>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="glass p-6 border-white/5">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-[11px] font-black uppercase italic text-gray-400 tracking-widest">Market Psychology</h3>
-                                <i class="fas fa-chart-pie text-blue-500"></i>
-                            </div>
-                            <div class="flex justify-between text-[10px] font-black mb-3 italic">
-                                <span class="text-emerald-500">BULLISH <span id="buy-pc">0</span>%</span>
-                                <span class="text-red-500">BEARISH <span id="sell-pc">0</span>%</span>
-                            </div>
-                            <div class="sentiment-bar">
-                                <div id="bar-bull" class="bull-fill" style="width: 50%"></div>
-                                <div id="bar-bear" class="bear-fill" style="width: 50%"></div>
-                            </div>
-                            <p class="text-[9px] text-gray-600 mt-5 uppercase font-bold text-center italic tracking-widest leading-relaxed">Aggregating Institutional Order Flow & Retail Sentiment...</p>
-                        </div>
-
-                        <div class="glass p-6 border-amber-500/10">
-                            <h3 class="text-[11px] font-black uppercase italic text-amber-500 mb-6 tracking-widest flex items-center gap-2">
-                                <i class="fas fa-bolt animate-pulse"></i> High Impact News
-                            </h3>
-                            <div id="news-feed" class="space-y-4">
-                                </div>
-                        </div>
+                    <div class="w-full bg-red-500/20 h-2 rounded-full overflow-hidden flex">
+                        <div class="bg-green-500 h-full" style="width: 65%"></div>
                     </div>
                 </div>
-
-                <div class="lg:col-span-4 flex flex-col h-[85vh]">
-                    <div class="glass p-6 flex flex-col h-full border-cyan-500/10 overflow-hidden shadow-2xl">
-                        <div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
-                            <h3 class="text-xs font-black uppercase italic tracking-tighter text-cyan-400"><i class="fas fa-hashtag mr-2"></i>Community Mapping</h3>
-                            <button onclick="openPostModal()" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-blue-900/40">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        
-                        <div id="social-feed" class="flex-1 overflow-y-auto space-y-8 pr-2">
-                            </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-                <div id="page-autoscan" class="page px-4 lg:px-10 py-8">
-            <div id="autoscan-locked" class="max-w-xl mx-auto glass p-12 text-center mt-10 hidden">
-                <i class="fas fa-lock text-5xl text-amber-500 mb-6"></i>
-                <h2 class="text-3xl font-black italic uppercase text-white mb-2 tracking-tighter">VIP Access Required</h2>
-                <p class="text-[10px] text-gray-500 font-bold uppercase mb-10 tracking-[0.2em] italic leading-relaxed">
-                    Fitur Searching & Multi-Timeframe (Forex/Crypto) <br> terkunci. Silahkan hubungi Admin.
-                </p>
-                <button onclick="window.open('https://wa.me/6282258464062')" class="w-full bg-gradient-to-r from-amber-600 to-yellow-500 py-4 rounded-2xl font-black uppercase text-xs text-black shadow-xl shadow-amber-600/20 active:scale-95 transition-all">Upgrade to VIP Lifetime</button>
-            </div>
-
-            <div id="autoscan-content" class="max-w-6xl mx-auto space-y-8 hidden">
-                <div class="glass p-8 border-blue-500/10">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                        <div>
-                            <h2 class="text-3xl font-black uppercase italic tracking-tighter text-white">Institutional Scanner</h2>
-                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1 italic">Scan: Forex, BTC, ETH, Altcoins</p>
-                        </div>
-                        <div class="relative w-full md:w-80">
-                            <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-blue-500 text-sm"></i>
-                            <input type="text" id="pair-search" onkeyup="filterPairs()" placeholder="Search Pair (BTC, XAU, EUR...)" class="w-full bg-black/40 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-xs text-white focus:border-blue-500 outline-none italic transition-all">
-                        </div>
-                    </div>
-
-                    <div id="signal-display-area" class="hidden mb-10 p-8 rounded-[32px] bg-blue-600/5 border border-blue-500/20 animate-fadeIn">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <h3 id="active-pair" class="text-4xl font-black italic text-white uppercase tracking-tighter">---</h3>
-                                <div class="flex gap-2 mt-2">
-                                    <button onclick="setTF('M1-M5', 'SCALPING')" class="tf-btn active">SCALPING</button>
-                                    <button onclick="setTF('M15-H1', 'INTRADAY')" class="tf-btn">INTRADAY</button>
-                                    <button onclick="setTF('H4-D1', 'SWING')" class="tf-btn">SWING</button>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[10px] font-black text-blue-400 uppercase tracking-widest italic">Signal Status</span>
-                                <p id="sig-status" class="text-lg font-black text-green-500 italic uppercase">Confirmed</p>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="glass-dark p-6 rounded-2xl border-red-500/10">
-                                <p class="text-[9px] font-black text-red-500 uppercase mb-1 italic">Stop Loss</p>
-                                <p id="sig-sl" class="text-2xl font-black text-white italic tracking-tighter">0.0000</p>
-                            </div>
-                            <div class="glass-dark p-6 rounded-2xl border-green-500/10">
-                                <p class="text-[9px] font-black text-green-500 uppercase mb-1 italic">Take Profit</p>
-                                <p id="sig-tp" class="text-2xl font-black text-white italic tracking-tighter">0.0000</p>
-                            </div>
-                            <div class="glass-dark p-6 rounded-2xl border-blue-500/10">
-                                <p class="text-[9px] font-black text-blue-500 uppercase mb-1 italic">Entry Concept</p>
-                                <p id="sig-note" class="text-[11px] font-bold text-gray-300 italic leading-tight">Waiting for Selection...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-separate border-spacing-y-4">
-                            <tbody id="pair-list-body">
-                                </tbody>
-                        </table>
+                <div class="glass p-6">
+                    <h3 class="text-[10px] font-bold uppercase text-amber-500 mb-4 italic">Economic News</h3>
+                    <div class="text-[11px] text-gray-400 space-y-2">
+                        <p>• USD: FOMC Meeting Minutes - High Impact</p>
+                        <p>• Gold: Demand Spike at Support Zone</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="page-visual" class="page px-4 lg:px-10 py-8">
-            <div class="max-w-3xl mx-auto space-y-8">
-                <div class="glass p-10 text-center border-cyan-500/20">
-                    <div class="mb-10">
-                        <div class="w-20 h-20 bg-cyan-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-cyan-500/30">
-                            <i class="fas fa-microchip text-4xl text-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]"></i>
-                        </div>
-                        <h2 class="text-3xl font-black italic uppercase text-white tracking-tighter">Visual AI Analyst</h2>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase italic tracking-widest mt-2">Upload Chart for SMC Pattern Recognition</p>
+        <div id="page-autoscan" class="page p-6">
+            <div id="signal-display-area" class="hidden glass p-8 mb-6 border-blue-500/20 animate-pulse">
+                <h2 id="active-pair" class="text-3xl font-black italic mb-4">---</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
+                        <p class="text-[8px] text-red-500 font-bold uppercase">Stop Loss</p>
+                        <p id="sig-sl" class="text-xl font-bold">0.0000</p>
                     </div>
-                    
-                    <div onclick="document.getElementById('ai-img-input').click()" class="border-2 border-dashed border-white/5 rounded-[40px] p-16 bg-black/20 mb-8 cursor-pointer hover:border-cyan-500/50 transition-all group overflow-hidden relative">
-                        <input type="file" id="ai-img-input" class="hidden" onchange="previewVisualImage(event)" accept="image/*">
-                        <div id="v-placeholder">
-                            <i class="fas fa-expand text-5xl text-gray-700 mb-6 group-hover:scale-110 transition-transform"></i>
-                            <p class="text-[11px] font-black text-gray-500 uppercase tracking-[0.3em]">Drop Institutional Chart Here</p>
-                        </div>
-                        <img id="v-preview" class="hidden w-full rounded-2xl shadow-2xl">
-                    </div>
-
-                    <div class="text-left mb-8">
-                        <label class="text-[9px] font-black text-gray-500 uppercase italic mb-3 block ml-4">Analysis Prompt / Note</label>
-                        <textarea id="ai-instruction" placeholder="Contoh: Cari BOS dan Order Block di M15 ini..." class="w-full bg-black/40 border border-white/5 rounded-[28px] p-6 text-sm text-gray-300 italic h-32 focus:border-cyan-500 outline-none"></textarea>
-                    </div>
-                    
-                    <button id="btn-scan-visual" onclick="runVisualAI()" class="w-full bg-cyan-600 hover:bg-cyan-700 py-5 rounded-[28px] font-black uppercase text-xs text-white shadow-xl shadow-cyan-900/20 active:scale-95 transition-all italic tracking-[0.2em]">Start AI Market Decoding</button>
-                </div>
-
-                <div id="v-result-box" class="hidden glass p-10 border-cyan-500/30 animate-fadeIn">
-                    <div class="grid grid-cols-2 gap-6 mb-8">
-                        <div class="p-6 bg-red-500/5 border border-red-500/20 rounded-3xl text-center">
-                            <p class="text-[9px] font-black text-red-500 uppercase italic mb-1">Visual SL</p>
-                            <p id="v-sl-out" class="text-2xl font-black text-white italic">---</p>
-                        </div>
-                        <div class="p-6 bg-green-500/5 border border-green-500/20 rounded-3xl text-center">
-                            <p class="text-[9px] font-black text-green-500 uppercase italic mb-1">Visual TP</p>
-                            <p id="v-tp-out" class="text-2xl font-black text-white italic">---</p>
-                        </div>
-                    </div>
-                    <div class="glass-dark p-8 rounded-3xl border-white/5">
-                        <p class="text-[10px] font-black text-cyan-500 uppercase mb-4 italic tracking-widest">AI Market Structure Report:</p>
-                        <p id="v-analysis-out" class="text-sm leading-relaxed text-gray-300 font-medium italic"></p>
+                    <div class="p-4 bg-green-500/10 rounded-xl border border-green-500/20">
+                        <p class="text-[8px] text-green-500 font-bold uppercase">Take Profit</p>
+                        <p id="sig-tp" class="text-xl font-bold">0.0000</p>
                     </div>
                 </div>
+                <p id="sig-note" class="mt-4 text-xs italic text-gray-400"></p>
+            </div>
+
+            <div class="glass p-6">
+                <table class="w-full text-left">
+                    <thead class="text-[9px] text-gray-600 uppercase italic">
+                        <tr><th class="p-3">Pair</th><th class="p-3">Status</th><th class="p-3">Action</th></tr>
+                    </thead>
+                    <tbody id="pair-list-body"></tbody>
+                </table>
             </div>
         </div>
-            <div id="page-admin" class="page px-4 lg:px-10 py-8">
-        <div class="max-w-6xl mx-auto space-y-8">
-            <div class="flex items-center gap-6 mb-10">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-800 rounded-[24px] flex items-center justify-center shadow-2xl shadow-blue-900/40 border border-white/10">
-                    <i class="fas fa-shield-heart text-white text-2xl"></i>
-                </div>
-                <div>
-                    <h2 class="text-4xl font-black italic uppercase text-white tracking-tighter">Terminal Control Center</h2>
-                    <p class="text-[10px] text-blue-500 font-black uppercase tracking-[0.3em] italic">Authorized: Root Admin / PSBETUNG</p>
-                </div>
-            </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 glass p-8 border-white/5 flex flex-col h-[600px]">
-                    <div class="flex justify-between items-center mb-8">
-                        <h3 class="text-xs font-black uppercase text-gray-400 italic tracking-widest"><i class="fas fa-users-gear mr-2"></i>User Database</h3>
-                        <div class="flex gap-2">
-                            <span class="text-[9px] bg-blue-600/10 text-blue-400 px-3 py-1 rounded-full font-black border border-blue-500/20 uppercase">Total: <span id="admin-user-count">0</span></span>
-                        </div>
-                    </div>
-                    <div class="overflow-y-auto flex-1 pr-4">
-                        <table class="w-full text-left border-separate border-spacing-y-3">
-                            <thead class="text-[9px] text-gray-600 uppercase font-black italic tracking-widest">
-                                <tr>
-                                    <th class="px-4">Identity</th>
-                                    <th class="px-4">Status</th>
-                                    <th class="px-4">WA Number</th>
-                                    <th class="px-4 text-right">Control</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-user-table-body">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="glass p-8 border-blue-600/20">
-                    <h3 class="text-xs font-black uppercase text-blue-500 mb-8 italic tracking-widest border-b border-white/5 pb-4">Global Signal Injector</h3>
-                    <div class="space-y-5">
-                        <div>
-                            <label class="text-[9px] font-black text-gray-600 uppercase mb-2 block ml-2">Select Target Pair</label>
-                            <select id="adm-pair-select" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-xs text-white outline-none focus:border-blue-500">
-                                <option value="XAUUSD">XAUUSD (GOLD)</option>
-                                <option value="BTCUSDT">BTC/USDT</option>
-                                <option value="ETHUSDT">ETH/USDT</option>
-                            </select>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input id="adm-sl" type="text" placeholder="Stop Loss" class="bg-black/40 border border-white/5 p-4 rounded-2xl text-xs text-red-500 outline-none">
-                            <input id="adm-tp" type="text" placeholder="Take Profit" class="bg-black/40 border border-white/5 p-4 rounded-2xl text-xs text-green-500 outline-none">
-                        </div>
-                        <textarea id="adm-note" placeholder="Entry Reason (SMC/BOS/OB)" class="w-full bg-black/40 border border-white/5 p-4 rounded-2xl text-xs text-gray-300 h-24 outline-none"></textarea>
-                        <button onclick="adminBroadcastSignal()" class="w-full bg-blue-600 py-4 rounded-2xl font-black text-[11px] uppercase text-white shadow-xl shadow-blue-900/40 hover:bg-blue-500 transition-all">Push to All Users</button>
-                    </div>
-                </div>
+        <div id="page-admin" class="page p-6">
+            <div class="glass p-10 text-center">
+                <i class="fas fa-lock text-4xl text-blue-500 mb-4"></i>
+                <h2 class="text-2xl font-black italic">CONTROL PANEL</h2>
+                <p class="text-xs text-gray-500 mt-2">Manage Users & Sinyal Master di sini.</p>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        // --- KONFIGURASI ---
-        const fbURL = "https://ai-signalfx-default-rtdb.asia-southeast1.firebasedatabase.app/";
-        let currentUser = null;
-        let USER_DATABASE = {}; // Simpan data user lokal untuk session
-
-        // --- AUTH & LOGIN SYSTEM ---
-        function toggleAuth() {
-            document.getElementById('login-form').classList.toggle('hidden');
-            document.getElementById('register-form').classList.toggle('hidden');
-        }
-
-        async function handleAuth(type) {
-            if(type === 'register') {
-                const name = document.getElementById('reg-name').value;
-                const email = document.getElementById('reg-email').value.replace(/\./g, '_');
-                const wa = document.getElementById('reg-wa').value;
-                if(!name || !email || !wa) return alert("Lengkapi data pendaftaran!");
-
-                const newUser = { name, email, wa, status: 'FREE', role: 'USER', joined: new Date().toLocaleDateString() };
-                await fetch(`${fbURL}users/${email}.json`, { method: 'PUT', body: JSON.stringify(newUser) });
-                alert("Pendaftaran Berhasil! Silahkan Login.");
-                toggleAuth();
-            } else {
-                const email = document.getElementById('user-email').value.replace(/\./g, '_').toLowerCase();
-                const pass = document.getElementById('user-pass').value;
-
-                // Simple Admin Bypass for lo, Bro
-                if(email === 'admin@gmail_com' && pass === 'admin123') {
-                    currentUser = { name: "PSBETUNG", status: "LIFETIME", role: "ADMIN", email: "admin@gmail.com" };
-                } else {
-                    const res = await fetch(`${fbURL}users/${email}.json`);
-                    currentUser = await res.json();
-                }
-
-                if(currentUser) {
-                    document.getElementById('auth-screen').classList.add('hidden');
-                    initMainApp();
-                } else { alert("User tidak ditemukan / Akses ditolak."); }
-            }
-        }
-
-        // --- CORE INITIALIZATION ---
-        function initMainApp() {
-            document.getElementById('display-name').innerText = currentUser.name;
-            document.getElementById('status-badge').innerText = currentUser.status + " MEMBER";
-            
-            if(currentUser.role === 'ADMIN') {
-                document.getElementById('admin-nav').classList.remove('hidden');
-                loadAdminDashboard();
-            }
-
-            initTradingView();
-            updateSentimentBar();
-            loadNews();
-            loadSocialFeed();
-            loadPairList();
-        }
-
-        // --- DASHBOARD: SOCIAL FEED (KIRIM FOTO & TEKS) ---
-        async function submitNewPost() {
-            const text = document.getElementById('post-text').value;
-            if(!text) return;
-
-            const postData = {
-                user: currentUser.name,
-                msg: text,
-                img: "https://via.placeholder.com/600x400/161a1e/3b82f6?text=Institutional+Analysis", // Simulasi upload
-                likes: 0,
-                timestamp: new Date().toLocaleTimeString()
-            };
-
-            await fetch(`${fbURL}posts.json`, { method: 'POST', body: JSON.stringify(postData) });
-            document.getElementById('post-text').value = "";
-            closePostModal();
-            loadSocialFeed();
-        }
-
-        async function loadSocialFeed() {
-            const container = document.getElementById('social-feed');
-            const res = await fetch(`${fbURL}posts.json`);
-            const data = await res.json();
-            if(!data) return;
-
-            container.innerHTML = "";
-            Object.keys(data).reverse().forEach(id => {
-                const p = data[id];
-                container.innerHTML += `
-                    <div class="post-card animate-fadeIn">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center font-black text-[10px]">AI</div>
-                            <div>
-                                <p class="text-[10px] font-black text-white uppercase italic">${p.user}</p>
-                                <p class="text-[8px] text-gray-600 font-bold italic">${p.timestamp}</p>
-                            </div>
-                        </div>
-                        <p class="text-[11px] text-gray-300 italic font-medium leading-relaxed">${p.msg}</p>
-                        <img src="${p.img}" class="post-img shadow-xl">
-                        <div class="flex gap-4 mt-4 pt-4 border-t border-white/5">
-                            <button class="text-[9px] font-black text-blue-500 uppercase italic"><i class="fas fa-heart mr-1"></i> Respect</button>
-                            <button class="text-[9px] font-black text-gray-600 uppercase italic"><i class="fas fa-comment mr-1"></i> Discussion</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        // --- AUTOSCAN VIP ENGINE ---
-        const MOCK_PAIRS = [
-            { name: "XAUUSD", sl: "2310.50", tp: "2365.00", note: "BOS Up Confirmed. Wait for OB Re-test." },
-            { name: "BTCUSDT", sl: "61200.00", tp: "68400.00", note: "Institutional Liquidity Grab at 60k." },
-            { name: "ETHUSDT", sl: "2840.00", tp: "3200.00", note: "Fair Value Gap (FVG) Fill on H4." }
+        // DATA MASTER
+        const PAIRS = [
+            { name: "XAUUSD", sl: "2315.40", tp: "2368.00", note: "Institutional Order Block H1" },
+            { name: "BTCUSDT", sl: "61200", tp: "68000", note: "Liquidity Sweep detected" },
+            { name: "EURUSD", sl: "1.0820", tp: "1.0950", note: "BOS Structure on M15" }
         ];
 
-        function loadPairList() {
+        // FUNGSI NAVIGASI
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function switchPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(window.innerWidth < 1024) toggleSidebar();
+        }
+
+        // FUNGSI CORE
+        function initApp() {
+            // Load Chart
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": "OANDA:XAUUSD",
+                "interval": "15",
+                "container_id": "tv-full-container",
+                "theme": "dark",
+                "style": "1",
+                "locale": "id"
+            });
+
+            // Load Pair Table
             const body = document.getElementById('pair-list-body');
-            body.innerHTML = "";
-            MOCK_PAIRS.forEach(p => {
+            PAIRS.forEach(p => {
                 body.innerHTML += `
-                    <tr onclick="selectPair('${p.name}', '${p.sl}', '${p.tp}', '${p.note}')" class="bg-black/40 hover:bg-blue-600/10 cursor-pointer transition-all border border-white/5">
-                        <td class="p-5 rounded-l-2xl font-black italic text-white tracking-tighter">${p.name}</td>
-                        <td class="p-5 text-[10px] text-cyan-400 font-bold uppercase italic">SMC Identified</td>
-                        <td class="p-5 rounded-r-2xl text-right text-gray-600"><i class="fas fa-arrow-right-long"></i></td>
+                    <tr onclick="selectPair('${p.name}')" class="border-b border-white/5 hover:bg-white/5 cursor-pointer">
+                        <td class="p-4 font-bold italic">${p.name}</td>
+                        <td class="p-4 text-[10px] text-blue-500 font-bold uppercase">SMC Scan</td>
+                        <td class="p-4 text-right"><i class="fas fa-chevron-right"></i></td>
                     </tr>`;
             });
         }
 
-        function selectPair(name, sl, tp, note) {
+        function selectPair(name) {
+            const data = PAIRS.find(p => p.name === name);
             document.getElementById('signal-display-area').classList.remove('hidden');
-            document.getElementById('active-pair').innerText = name;
-            document.getElementById('sig-sl').innerText = sl;
-            document.getElementById('sig-tp').innerText = tp;
-            document.getElementById('sig-note').innerText = note;
+            document.getElementById('active-pair').innerText = data.name;
+            document.getElementById('sig-sl').innerText = data.sl;
+            document.getElementById('sig-tp').innerText = data.tp;
+            document.getElementById('sig-note').innerText = data.note;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- VISUAL AI ENGINE ---
-        function runVisualAI() {
-            const btn = document.getElementById('btn-scan-visual');
-            const res = document.getElementById('v-result-box');
-            btn.innerText = "DECODING MARKET STRUCTURE...";
-            
-            setTimeout(() => {
-                btn.innerText = "DECODING COMPLETE";
-                res.classList.remove('hidden');
-                document.getElementById('v-sl-out').innerText = "2312.45";
-                document.getElementById('v-tp-out').innerText = "2358.90";
-                document.getElementById('v-analysis-out').innerText = "Analisis AI: Ditemukan 'Unmitigated Order Block' pada zona diskon. Terjadi 'Change of Character' (CHoCH) yang mengonfirmasi pembalikan arah. Target profit diletakkan pada 'External Liquidity' tertinggi.";
-                res.scrollIntoView({ behavior: 'smooth' });
-            }, 3500);
-        }
-
-        // --- ADMIN CONTROLS ---
-        async function loadAdminDashboard() {
-            const res = await fetch(`${fbURL}users.json`);
-            const users = await res.json();
-            const table = document.getElementById('admin-user-table-body');
-            table.innerHTML = "";
-            let count = 0;
-            for(let key in users) {
-                count++;
-                const u = users[key];
-                table.innerHTML += `
-                    <tr class="bg-black/20 border border-white/5">
-                        <td class="p-4 font-bold text-xs text-white">${u.name}<br><span class="text-[9px] text-gray-600">${u.email}</span></td>
-                        <td class="p-4"><span class="px-2 py-1 bg-blue-600/10 text-blue-500 rounded text-[9px] font-black">${u.status}</span></td>
-                        <td class="p-4 text-[10px] text-gray-400 italic">${u.wa}</td>
-                        <td class="p-4 text-right">
-                            <button onclick="upgradeUser('${key}')" class="text-amber-500 hover:text-white text-[10px] font-black italic">UPGRADE VIP</button>
-                        </td>
-                    </tr>`;
-            }
-            document.getElementById('admin-user-count').innerText = count;
-        }
-
-        async function upgradeUser(key) {
-            await fetch(`${fbURL}users/${key}/status.json`, { method: 'PUT', body: JSON.stringify('LIFETIME') });
-            alert("User Upgraded to VIP!");
-            loadAdminDashboard();
-        }
-
-        // --- UTILS ---
-        function logout() { location.reload(); }
-        function switchPage(p, e) {
-            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
-            document.getElementById(p).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
-            if(e) e.classList.add('nav-active');
-        }
-        function checkVipAccess(p, e) {
-            if(currentUser.status === 'LIFETIME' || currentUser.role === 'ADMIN') { switchPage(p, e); }
-            else { document.getElementById('autoscan-locked').classList.remove('hidden'); switchPage(p, e); }
-        }
+        window.onload = initApp;
     </script>
 </body>
 </html>
-
-    
